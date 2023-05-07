@@ -1,8 +1,9 @@
 # andresgmg.github.io
-portfolio hecho con plantilla html, css y js, sin framework.
+portfolio hecho con plantilla bootstrap, sin framework.
 
 ## HERRAMIENTAS USADAS
 - bootstrap
+- HTML, CSS, JavaScript
 - jquery
 - php
 - scss
