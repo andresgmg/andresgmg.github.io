@@ -14,17 +14,17 @@ export const experience: Experience[] = [
     end: null,
     kind: 'work',
     title: {
-      en: 'Senior Software Engineer — Copec Suyay Project',
-      es: 'Senior Software Engineer — Proyecto Copec Suyay',
+      en: 'Senior Software Engineer — COPEC Project',
+      es: 'Senior Software Engineer — Proyecto COPEC',
     },
     highlights: {
       en: [
-        'Build and scale the Copec Suyay application under Agile methodologies, ensuring a maintainable and scalable architecture.',
+        'Build and scale the COPEC ENLACE application under Agile methodologies, ensuring a maintainable and scalable architecture.',
         'Designed and implemented robust JWT + Django authentication, hardening security across user session management.',
         'Developed Generative AI agents with Gemini and LangChain that automate the creation of user profiles and technical descriptions from user data.',
       ],
       es: [
-        'Desarrollo y escalo la aplicación del proyecto Copec Suyay bajo metodologías Agile, asegurando una arquitectura mantenible y escalable.',
+        'Desarrollo y escalo la aplicación del proyecto COPEC ENLACE bajo metodologías Agile, asegurando una arquitectura mantenible y escalable.',
         'Diseñé e implementé autenticación robusta con JWT y Django, reforzando la seguridad en el manejo de sesiones de usuario.',
         'Desarrollé agentes de IA Generativa con Gemini y LangChain que automatizan la creación de perfiles y descripciones técnicas a partir de datos de usuario.',
       ],
@@ -33,6 +33,7 @@ export const experience: Experience[] = [
   },
   {
     company: 'Sendos.ai',
+    url: 'https://sendos.ai/',
     location: { en: 'Mexico · Remote', es: 'México · Remoto' },
     start: '2024-10',
     end: '2025-03',
@@ -105,6 +106,7 @@ export const experience: Experience[] = [
   },
   {
     company: 'Haintech Solution',
+    url: 'https://www.haintech.cl/',
     location: { en: 'Chile', es: 'Chile' },
     start: '2022-02',
     end: '2022-05',
@@ -180,6 +182,7 @@ export const experience: Experience[] = [
   },
   {
     company: 'Astroluv',
+    url: 'https://astroluv.website/',
     location: { en: 'Spain · Remote', es: 'España · Remoto' },
     start: '2025-01',
     end: null,
@@ -206,13 +209,14 @@ export const experience: Experience[] = [
   },
   {
     company: 'Vedhome',
+    url: 'https://vedhome.cl/',
     location: { en: 'Chile', es: 'Chile' },
     start: '2021-01',
     end: '2022-01',
     kind: 'freelance',
     title: {
-      en: 'IT Support',
-      es: 'Soporte TI',
+      en: 'IT Support & Full-Stack Developer',
+      es: 'Soporte TI y Desarrollador Full-Stack',
     },
     highlights: {
       en: [

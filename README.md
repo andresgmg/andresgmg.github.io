@@ -6,6 +6,8 @@ bilingual (English / Spanish), and continuously deployed to **GitHub Pages** via
 
 🌐 Live site: <https://andresgmg.github.io>
 
+![Open Graph preview](public/og-image.png)
+
 ## ✨ Features
 
 - **Bilingual (EN/ES)** with Astro i18n — English at `/`, Spanish at `/es/`.
@@ -51,7 +53,9 @@ Prettier · GitHub Actions · GitHub Pages.
 | `npm run check`        | Type-check with `astro check`                         |
 | `npm run format`       | Format the codebase with Prettier                     |
 | `npm run format:check` | Verify formatting (used by CI)                        |
+| `npm run cv:all`       | Regenerate CV PDFs + `og-image.png`                   |
 | `npm run cv:pdf`       | Regenerate the CV PDFs and `og-image.png` (see below) |
+| `npm run cv:og`        | Regenerate only `og-image.png`                        |
 
 ## ✏️ Editing content
 
@@ -68,13 +72,15 @@ UI labels (buttons, section titles) live in `src/i18n/ui.ts`.
 
 ## 📄 Regenerating the CVs
 
-The downloadable CVs (`public/CV_2026_AMG_EN.pdf` / `_ES.pdf`) and the social share image are
+The downloadable CVs (`public/CV_2026_AGMG_EN.pdf` / `_ES.pdf`) and the social share image are
 generated from the print routes `/cv/en` and `/cv/es` using headless Chromium.
 
 ```sh
 npm run build                  # build the site first
 npx playwright install chromium # one-time: install the browser
+npm run cv:all                 # writes the PDFs + og-image.png into public/
 npm run cv:pdf                 # writes the PDFs + og-image.png into public/
+npm run cv:og                  # writes only og-image.png into public/
 ```
 
 Commit the regenerated files so download links stay stable and the deploy stays lightweight.

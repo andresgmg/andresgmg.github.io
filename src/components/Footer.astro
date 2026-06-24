@@ -16,8 +16,11 @@ const year = new Date().getFullYear();
 <footer class="site-footer">
   <div class="container footer-inner">
     <div class="footer-brand">
-      <p class="footer-name">{profile.name}</p>
-      <p class="footer-tagline muted">{profile.tagline[lang]}</p>
+      <img class="footer-mark" src="/favicon.svg" alt="" aria-hidden="true" width="36" height="36" />
+      <div class="footer-brand-text">
+        <p class="footer-name">{profile.name}</p>
+        <p class="footer-tagline muted">{profile.tagline[lang]}</p>
+      </div>
     </div>
 
     <ul class="footer-socials">
@@ -58,6 +61,24 @@ const year = new Date().getFullYear();
     align-items: center;
     justify-content: space-between;
     gap: 1.25rem;
+  }
+
+  .footer-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+  }
+
+  .footer-mark {
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 0.55rem;
+    flex: 0 0 auto;
+  }
+
+  .footer-brand-text {
+    display: grid;
+    gap: 0.1rem;
   }
 
   .footer-name {

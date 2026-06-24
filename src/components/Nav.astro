@@ -10,6 +10,7 @@ interface Props {
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 const other = altLang(lang);
+const langSwitchLabel = other === 'es' ? t('lang.switchToSpanish') : t('lang.switchToEnglish');
 
 const sections = ['about', 'experience', 'skills', 'projects', 'education', 'contact'] as const;
 ---
@@ -17,7 +18,7 @@ const sections = ['about', 'experience', 'skills', 'projects', 'education', 'con
 <header class="site-header">
   <nav class="container nav" aria-label="Primary">
     <a class="brand" href={basePath(lang)} aria-label="Andrés Márquez — home">
-      <span class="brand-mark" aria-hidden="true">AM</span>
+      <img class="brand-mark" src="/favicon.svg" alt="" aria-hidden="true" width="36" height="36" />
       <span class="brand-name">Andrés Márquez</span>
     </a>
 
@@ -32,12 +33,31 @@ const sections = ['about', 'experience', 'skills', 'projects', 'education', 'con
     </ul>
 
     <div class="nav-actions">
-      <a class="lang-switch" href={basePath(other)} hreflang={other} aria-label={t('lang.switch')}>
+      <a
+        class="lang-switch"
+        href={basePath(other)}
+        hreflang={other}
+        aria-label={langSwitchLabel}
+        title={langSwitchLabel}
+      >
         <span aria-hidden="true">{other.toUpperCase()}</span>
       </a>
-      <button id="theme-toggle" class="icon-btn" type="button" aria-label={t('theme.toggle')}>
-        <Icon name="sun" class="icon-sun" />
-        <Icon name="moon" class="icon-moon" />
+      <button
+        id="theme-toggle"
+        class="icon-btn theme-toggle"
+        type="button"
+        aria-label={t('theme.toggle')}
+        data-switch-dark={t('theme.switchToDark')}
+        data-switch-light={t('theme.switchToLight')}
+      >
+        <span class="theme-option theme-option-dark" aria-hidden="true">
+          <Icon name="moon" class="theme-icon" />
+          <span class="theme-text">{t('theme.dark')}</span>
+        </span>
+        <span class="theme-option theme-option-light" aria-hidden="true">
+          <Icon name="sun" class="theme-icon" />
+          <span class="theme-text">{t('theme.light')}</span>
+        </span>
       </button>
     </div>
   </nav>
@@ -71,16 +91,10 @@ const sections = ['about', 'experience', 'skills', 'projects', 'education', 'con
   }
 
   .brand-mark {
-    display: grid;
-    place-items: center;
-    width: 2rem;
-    height: 2rem;
+    width: 2.25rem;
+    height: 2.25rem;
     border-radius: 0.55rem;
-    background: var(--accent);
-    color: var(--accent-contrast);
-    font-size: 0.82rem;
-    font-weight: 700;
-    letter-spacing: 0;
+    flex: 0 0 auto;
   }
 
   .nav-links {
@@ -128,10 +142,12 @@ const sections = ['about', 'experience', 'skills', 'projects', 'education', 'con
   }
 
   .icon-btn {
-    display: inline-grid;
-    place-items: center;
-    width: 2.25rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.25rem;
     height: 2.25rem;
+    padding-inline: 0.6rem;
     border-radius: var(--radius-sm);
     border: 1px solid var(--border);
     background: transparent;
@@ -147,16 +163,60 @@ const sections = ['about', 'experience', 'skills', 'projects', 'education', 'con
     border-color: var(--accent);
   }
 
-  .icon-sun {
-    display: none;
+  .theme-toggle {
+    position: relative;
+    min-width: 5.85rem;
+    overflow: hidden;
   }
 
-  :global([data-theme='dark']) .icon-sun {
-    display: block;
+  .theme-option {
+    position: absolute;
+    inset: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    transition:
+      opacity 0.2s ease,
+      transform 0.2s ease;
   }
 
-  :global([data-theme='dark']) .icon-moon {
-    display: none;
+  .theme-icon {
+    width: 1rem;
+    height: 1rem;
+    flex: 0 0 auto;
+  }
+
+  .theme-text {
+    font-size: 0.8rem;
+    font-weight: 600;
+    line-height: 1;
+  }
+
+  .theme-option-dark {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .theme-option-light {
+    opacity: 0;
+    transform: translateY(35%);
+  }
+
+  :global([data-theme='dark']) .theme-option-dark {
+    opacity: 0;
+    transform: translateY(-35%);
+  }
+
+  :global([data-theme='dark']) .theme-option-light {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .theme-option {
+      transition: none;
+    }
   }
 
   @media (min-width: 48rem) {
@@ -168,10 +228,23 @@ const sections = ['about', 'experience', 'skills', 'projects', 'education', 'con
 
 <script>
   const toggle = document.getElementById('theme-toggle');
+  const root = document.documentElement;
+
+  const updateThemeToggleLabel = () => {
+    if (!toggle) return;
+    const isDark = root.dataset.theme === 'dark';
+    const nextLabel = isDark ? toggle.dataset.switchLight : toggle.dataset.switchDark;
+    if (!nextLabel) return;
+    toggle.setAttribute('aria-label', nextLabel);
+    toggle.setAttribute('title', nextLabel);
+  };
+
+  updateThemeToggleLabel();
+
   toggle?.addEventListener('click', () => {
-    const root = document.documentElement;
     const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
     root.dataset.theme = next;
+    updateThemeToggleLabel();
     try {
       localStorage.setItem('theme', next);
     } catch (e) {

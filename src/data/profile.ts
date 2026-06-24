@@ -2,7 +2,7 @@ import type { Profile } from './types';
 
 export const profile: Profile = {
   name: 'Andrés Gerardo Márquez González',
-  initials: 'AM',
+  initials: 'AGMG',
   email: 'andres.gmg1997@gmail.com',
   phone: '+56 9 9127 9911',
   phoneHref: 'tel:+56991279911',
@@ -55,7 +55,7 @@ export const profile: Profile = {
     },
   ],
   cv: {
-    en: '/CV_2026_AMG_EN.pdf',
-    es: '/CV_2026_AMG_ES.pdf',
+    en: '/CV_2026_AGMG_EN.pdf',
+    es: '/CV_2026_AGMG_ES.pdf',
   },
 };

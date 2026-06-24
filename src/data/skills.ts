@@ -30,18 +30,20 @@ export const skillCategories: SkillCategory[] = [
   },
   {
     name: { en: 'Databases', es: 'Bases de datos' },
-    skills: ['PostgreSQL', 'MySQL', 'MariaDB', 'SQLite', 'MongoDB'],
+    skills: ['PostgreSQL', 'MySQL', 'MariaDB', 'SQLite', 'MongoDB', 'DynamoDB'],
   },
   {
     name: { en: 'Cloud & DevOps', es: 'Cloud y DevOps' },
     skills: [
-      'AWS (EC2, LightSail, Route 53, CloudFront, Cognito, Beanstalk, CodePipeline)',
+      'AWS',
       'Docker',
       'CI/CD',
       'Git',
       'Vercel',
-      'Heroku',
       'Render',
+      'Railway',
+      'Hostinger',
+      'DNS',
       'SSL',
     ],
   },
@@ -74,5 +76,9 @@ export const spokenLanguages: SpokenLanguage[] = [
   {
     name: { en: 'Portuguese', es: 'Portugués' },
     level: { en: 'Intermediate', es: 'Intermedio' },
+  },
+  {
+    name: { en: 'Chinnese', es: 'Chino Mandarín' },
+    level: { en: 'Basic', es: 'Basico' },
   },
 ];

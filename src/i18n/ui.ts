@@ -51,7 +51,13 @@ const en = {
   present: 'Present',
 
   'theme.toggle': 'Toggle dark mode',
+  'theme.dark': 'Dark',
+  'theme.light': 'Light',
+  'theme.switchToDark': 'Switch to dark mode',
+  'theme.switchToLight': 'Switch to light mode',
   'lang.switch': 'Switch language',
+  'lang.switchToSpanish': 'Switch to Spanish',
+  'lang.switchToEnglish': 'Switch to English',
 
   'footer.builtWith': 'Built with Astro · Deployed on GitHub Pages',
   'footer.rights': 'All rights reserved.',
@@ -114,7 +120,13 @@ const es: Record<UiKey, string> = {
   present: 'Presente',
 
   'theme.toggle': 'Alternar modo oscuro',
+  'theme.dark': 'Oscuro',
+  'theme.light': 'Claro',
+  'theme.switchToDark': 'Cambiar a modo oscuro',
+  'theme.switchToLight': 'Cambiar a modo claro',
   'lang.switch': 'Cambiar idioma',
+  'lang.switchToSpanish': 'Cambiar a Español',
+  'lang.switchToEnglish': 'Cambiar a Inglés',
 
   'footer.builtWith': 'Hecho con Astro · Desplegado en GitHub Pages',
   'footer.rights': 'Todos los derechos reservados.',
