@@ -1,0 +1,133 @@
+---
+import { profile } from '../data';
+import type { Lang } from '../data/types';
+import { useTranslations } from '../i18n/utils';
+import Icon from './Icon.astro';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<section id="contact" class="section section-alt">
+  <div class="container contact-inner">
+    <div class="section-head">
+      <p class="eyebrow">06</p>
+      <h2 class="section-title">{t('section.contact')}</h2>
+    </div>
+
+    <p class="contact-lead">{t('contact.lead')}</p>
+
+    <div class="contact-actions">
+      <a class="btn btn-primary" href={`mailto:${profile.email}`}>
+        <Icon name="email" size={16} />
+        {t('contact.emailMe')}
+      </a>
+      <a class="btn btn-outline" href={profile.cv.en} download>
+        <Icon name="download" size={16} />
+        {t('hero.cta.downloadEn')}
+      </a>
+      <a class="btn btn-outline" href={profile.cv.es} download>
+        <Icon name="download" size={16} />
+        {t('hero.cta.downloadEs')}
+      </a>
+    </div>
+
+    <ul class="contact-list">
+      {
+        profile.socials.map((s) => (
+          <li>
+            <a
+              href={s.href}
+              class="contact-row"
+              rel="noopener noreferrer"
+              target={s.href.startsWith('http') ? '_blank' : undefined}
+            >
+              <span class="contact-icon">
+                <Icon name={s.icon} size={18} />
+              </span>
+              <span class="contact-text">
+                <span class="contact-label">{s.label}</span>
+                {s.handle && <span class="contact-handle muted">{s.handle}</span>}
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .section-alt {
+    background: var(--surface);
+  }
+
+  .contact-lead {
+    font-size: clamp(1.1rem, 2.6vw, 1.35rem);
+    color: var(--heading);
+    font-weight: 500;
+    max-width: 42ch;
+  }
+
+  .contact-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+  }
+
+  .contact-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+    gap: 0.75rem;
+    margin: 2.5rem 0 0;
+  }
+
+  .contact-row {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    padding: 0.9rem 1.1rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    background: var(--bg);
+    transition:
+      border-color 0.2s ease,
+      transform 0.15s ease;
+  }
+
+  .contact-row:hover {
+    border-color: var(--accent);
+    transform: translateY(-1px);
+  }
+
+  .contact-icon {
+    display: inline-grid;
+    place-items: center;
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+
+  .contact-text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .contact-label {
+    font-weight: 600;
+    color: var(--heading);
+    font-size: 0.92rem;
+  }
+
+  .contact-handle {
+    font-size: 0.84rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+</style>

@@ -1,0 +1,125 @@
+---
+import { projects } from '../data';
+import type { Lang } from '../data/types';
+import { useTranslations } from '../i18n/utils';
+import Icon from './Icon.astro';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const featured = projects.filter((p) => p.featured);
+---
+
+<section id="projects" class="section section-alt">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">04</p>
+      <h2 class="section-title">{t('section.projects')}</h2>
+    </div>
+
+    <div class="projects-grid">
+      {
+        featured.map((p) => (
+          <article class="project card">
+            <div class="project-head">
+              <h3 class="project-name">{p.name}</h3>
+              <div class="project-links">
+                {p.url && (
+                  <a href={p.url} target="_blank" rel="noopener noreferrer" class="project-link">
+                    <Icon name="external" size={15} />
+                    <span>{t('projects.visit')}</span>
+                  </a>
+                )}
+                {p.repo && (
+                  <a href={p.repo} target="_blank" rel="noopener noreferrer" class="project-link">
+                    <Icon name="github" size={15} />
+                    <span>{t('projects.code')}</span>
+                  </a>
+                )}
+              </div>
+            </div>
+            <p class="project-desc muted">{p.description[lang]}</p>
+            <ul class="project-tags">
+              {p.tags.map((tag) => (
+                <li class="tag">{tag}</li>
+              ))}
+            </ul>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .section-alt {
+    background: var(--surface);
+  }
+
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+    gap: 1.25rem;
+  }
+
+  .project {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    padding: 1.5rem 1.6rem;
+    transition:
+      transform 0.18s ease,
+      border-color 0.2s ease;
+  }
+
+  .project:hover {
+    transform: translateY(-3px);
+    border-color: var(--accent);
+  }
+
+  .project-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .project-name {
+    font-size: 1.15rem;
+  }
+
+  .project-links {
+    display: inline-flex;
+    gap: 0.85rem;
+    flex-shrink: 0;
+  }
+
+  .project-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--muted);
+    transition: color 0.2s ease;
+  }
+
+  .project-link:hover {
+    color: var(--accent);
+  }
+
+  .project-desc {
+    font-size: 0.95rem;
+    flex: 1;
+  }
+
+  .project-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin: 0;
+  }
+</style>

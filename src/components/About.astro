@@ -1,0 +1,31 @@
+---
+import { profile } from '../data';
+import type { Lang } from '../data/types';
+import { useTranslations } from '../i18n/utils';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<section id="about" class="section">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">01</p>
+      <h2 class="section-title">{t('section.about')}</h2>
+    </div>
+    <p class="about-summary">{profile.summary[lang]}</p>
+  </div>
+</section>
+
+<style>
+  .about-summary {
+    font-size: clamp(1.05rem, 2.4vw, 1.2rem);
+    color: var(--muted);
+    max-width: 68ch;
+    line-height: 1.75;
+  }
+</style>

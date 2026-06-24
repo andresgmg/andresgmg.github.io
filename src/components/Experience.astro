@@ -1,0 +1,193 @@
+---
+import { experience } from '../data';
+import type { Lang } from '../data/types';
+import { formatDateRange, useTranslations } from '../i18n/utils';
+import Icon from './Icon.astro';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const work = experience.filter((e) => e.kind === 'work');
+const freelance = experience.filter((e) => e.kind === 'freelance');
+const groups = [
+  { label: t('experience.work'), items: work },
+  { label: t('experience.freelance'), items: freelance },
+];
+---
+
+<section id="experience" class="section section-alt">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">02</p>
+      <h2 class="section-title">{t('section.experience')}</h2>
+    </div>
+
+    {
+      groups.map((group) => (
+        <div class="exp-group">
+          <h3 class="group-title">{group.label}</h3>
+          <ol class="timeline">
+            {group.items.map((e) => (
+              <li class="timeline-item">
+                <span class="timeline-marker" aria-hidden="true" />
+                <div class="timeline-card card">
+                  <div class="exp-head">
+                    <h4 class="exp-title">{e.title[lang]}</h4>
+                    <p class="exp-company">
+                      {e.url ? (
+                        <a href={e.url} target="_blank" rel="noopener noreferrer">
+                          {e.company}
+                          <Icon name="external" size={13} />
+                        </a>
+                      ) : (
+                        <span>{e.company}</span>
+                      )}
+                      <span class="exp-sep">·</span>
+                      <span class="muted">{e.location[lang]}</span>
+                    </p>
+                    <p class="exp-dates">{formatDateRange(e.start, e.end, lang)}</p>
+                  </div>
+                  <ul class="exp-highlights">
+                    {e.highlights[lang].map((h) => (
+                      <li>{h}</li>
+                    ))}
+                  </ul>
+                  <ul class="exp-stack" aria-label={t('experience.stack')}>
+                    {e.stack.map((s) => (
+                      <li class="tag">{s}</li>
+                    ))}
+                  </ul>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </div>
+      ))
+    }
+  </div>
+</section>
+
+<style>
+  .section-alt {
+    background: var(--surface);
+  }
+
+  .exp-group + .exp-group {
+    margin-top: 2.75rem;
+  }
+
+  .group-title {
+    font-size: 1.15rem;
+    color: var(--heading);
+    margin-bottom: 1.5rem;
+  }
+
+  .timeline {
+    display: grid;
+    gap: 1.25rem;
+    margin: 0;
+    position: relative;
+  }
+
+  .timeline-item {
+    position: relative;
+    padding-left: 1.75rem;
+  }
+
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: 0.32rem;
+    top: 1.6rem;
+    bottom: -1.25rem;
+    width: 2px;
+    background: var(--border);
+  }
+
+  .timeline-item:last-child::before {
+    display: none;
+  }
+
+  .timeline-marker {
+    position: absolute;
+    left: 0;
+    top: 1.15rem;
+    width: 0.7rem;
+    height: 0.7rem;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 4px var(--accent-soft);
+  }
+
+  .timeline-card {
+    padding: 1.25rem 1.4rem;
+  }
+
+  .exp-title {
+    font-size: 1.05rem;
+  }
+
+  .exp-company {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.92rem;
+    font-weight: 500;
+    margin-top: 0.25rem;
+  }
+
+  .exp-company a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    color: var(--accent);
+  }
+
+  .exp-sep {
+    color: var(--subtle);
+  }
+
+  .exp-dates {
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--subtle);
+    margin-top: 0.35rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .exp-highlights {
+    display: grid;
+    gap: 0.5rem;
+    margin: 1rem 0 0;
+  }
+
+  .exp-highlights li {
+    position: relative;
+    padding-left: 1.1rem;
+    color: var(--muted);
+    font-size: 0.94rem;
+  }
+
+  .exp-highlights li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.6rem;
+    width: 0.4rem;
+    height: 0.4rem;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  .exp-stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin: 1rem 0 0;
+  }
+</style>

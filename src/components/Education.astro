@@ -1,0 +1,118 @@
+---
+import { certifications, education } from '../data';
+import type { Lang } from '../data/types';
+import { useTranslations } from '../i18n/utils';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<section id="education" class="section">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">05</p>
+      <h2 class="section-title">{t('section.education')}</h2>
+    </div>
+
+    <div class="edu-grid">
+      <div class="edu-col">
+        <h3 class="group-title">{t('education.degrees')}</h3>
+        {
+          education.map((ed) => (
+            <div class="edu-item card">
+              <h4 class="edu-degree">{ed.degree[lang]}</h4>
+              <p class="muted">
+                {ed.institution} · {ed.location[lang]}
+              </p>
+              <p class="edu-dates">
+                {ed.start} – {ed.end}
+              </p>
+            </div>
+          ))
+        }
+      </div>
+
+      <div class="edu-col">
+        <h3 class="group-title">{t('education.certifications')}</h3>
+        <ul class="cert-list">
+          {
+            certifications.map((c) => (
+              <li class="cert card">
+                <span class="cert-name">{c.name[lang]}</span>
+                <span class="muted">{c.issuer}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .edu-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .group-title {
+    font-size: 1.15rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .edu-item {
+    padding: 1.25rem 1.4rem;
+  }
+
+  .edu-degree {
+    font-size: 1.05rem;
+  }
+
+  .edu-item .muted {
+    font-size: 0.92rem;
+    margin-top: 0.3rem;
+  }
+
+  .edu-dates {
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--subtle);
+    margin-top: 0.35rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .cert-list {
+    display: grid;
+    gap: 0.75rem;
+    margin: 0;
+  }
+
+  .cert {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    padding: 0.9rem 1.2rem;
+  }
+
+  .cert-name {
+    font-weight: 600;
+    color: var(--heading);
+    font-size: 0.95rem;
+  }
+
+  .cert .muted {
+    font-size: 0.85rem;
+  }
+
+  @media (min-width: 48rem) {
+    .edu-grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 2.5rem;
+    }
+  }
+</style>
