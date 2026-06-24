@@ -1,0 +1,337 @@
+---
+import {
+  certifications,
+  education,
+  experience,
+  profile,
+  skillCategories,
+  spokenLanguages,
+} from '../data';
+import type { Lang } from '../data/types';
+import { formatDateRange, useTranslations } from '../i18n/utils';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const linkedin = profile.socials.find((s) => s.icon === 'linkedin');
+const github = profile.socials.find((s) => s.icon === 'github');
+const strip = (url?: string) => (url ? url.replace(/^https?:\/\//, '') : '');
+
+const contactItems = [
+  profile.location[lang],
+  profile.email,
+  profile.phone,
+  strip(linkedin?.href),
+  strip(github?.href),
+].filter(Boolean);
+
+const work = experience.filter((e) => e.kind === 'work');
+const freelance = experience.filter((e) => e.kind === 'freelance');
+
+const experienceGroups = [
+  { label: t('cv.experience'), items: work },
+  { label: t('experience.freelance'), items: freelance },
+];
+---
+
+<div class="cv-toolbar no-print">
+  <a href={`/${lang === 'en' ? '' : 'es/'}`} class="tool-link">← {t('cv.backToSite')}</a>
+  <button id="cv-print" type="button" class="tool-btn">{t('cv.print')}</button>
+</div>
+
+<article class="cv-page">
+  <header class="cv-header">
+    <h1 class="cv-name">{profile.name}</h1>
+    <p class="cv-headline">{profile.headline[lang]}</p>
+    <p class="cv-contact">
+      {
+        contactItems.map((item, i) => (
+          <>
+            {i > 0 && <span class="sep">·</span>}
+            <span>{item}</span>
+          </>
+        ))
+      }
+    </p>
+  </header>
+
+  <section class="cv-section">
+    <h2 class="cv-h2">{t('cv.summary')}</h2>
+    <p class="cv-summary">{profile.summary[lang]}</p>
+  </section>
+
+  <section class="cv-section">
+    <h2 class="cv-h2">{t('cv.competencies')}</h2>
+    <ul class="cv-competencies">
+      {
+        skillCategories.map((cat) => (
+          <li>
+            <strong>{cat.name[lang]}:</strong> {cat.skills.join(', ')}
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  {
+    experienceGroups.map((group) => (
+      <section class="cv-section">
+        <h2 class="cv-h2">{group.label}</h2>
+        {group.items.map((e) => (
+          <div class="cv-role">
+            <div class="cv-role-head">
+              <span class="cv-role-title">
+                {e.title[lang]} — {e.company}
+              </span>
+              <span class="cv-role-dates">{formatDateRange(e.start, e.end, lang)}</span>
+            </div>
+            <p class="cv-role-meta">{e.location[lang]}</p>
+            <ul class="cv-bullets">
+              {e.highlights[lang].map((h) => (
+                <li>{h}</li>
+              ))}
+            </ul>
+            <p class="cv-role-stack">
+              <strong>{t('experience.stack')}:</strong> {e.stack.join(' · ')}
+            </p>
+          </div>
+        ))}
+      </section>
+    ))
+  }
+
+  <section class="cv-section">
+    <h2 class="cv-h2">{t('cv.education')}</h2>
+    {
+      education.map((ed) => (
+        <div class="cv-role">
+          <div class="cv-role-head">
+            <span class="cv-role-title">
+              {ed.degree[lang]} — {ed.institution}
+            </span>
+            <span class="cv-role-dates">
+              {ed.start} – {ed.end}
+            </span>
+          </div>
+          <p class="cv-role-meta">{ed.location[lang]}</p>
+        </div>
+      ))
+    }
+  </section>
+
+  <section class="cv-section">
+    <h2 class="cv-h2">{t('cv.certifications')}</h2>
+    <ul class="cv-certs">
+      {
+        certifications.map((c) => (
+          <li>
+            <strong>{c.name[lang]}</strong> — {c.issuer}
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <section class="cv-section">
+    <h2 class="cv-h2">{t('cv.languages')}</h2>
+    <p class="cv-languages">
+      {spokenLanguages.map((l) => `${l.name[lang]} (${l.level[lang]})`).join(' · ')}
+    </p>
+  </section>
+</article>
+
+<style>
+  .cv-toolbar {
+    max-width: 820px;
+    margin: 1.25rem auto 0;
+    padding-inline: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    font-size: 14px;
+  }
+
+  .tool-link {
+    color: var(--cv-accent);
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .tool-btn {
+    border: 1px solid var(--cv-accent);
+    background: var(--cv-accent);
+    color: #fff;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 14px;
+  }
+
+  .cv-page {
+    max-width: 820px;
+    margin: 1rem auto 3rem;
+    background: #fff;
+    padding: 2.5rem 2.75rem;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12);
+  }
+
+  .cv-header {
+    border-bottom: 2px solid var(--cv-accent);
+    padding-bottom: 0.6rem;
+    margin-bottom: 0.9rem;
+  }
+
+  .cv-name {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--cv-accent);
+  }
+
+  .cv-headline {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--cv-ink);
+    margin-top: 0.15rem;
+  }
+
+  .cv-contact {
+    font-size: 10px;
+    color: var(--cv-muted);
+    margin-top: 0.45rem;
+    line-height: 1.6;
+  }
+
+  .cv-contact .sep {
+    margin-inline: 0.4rem;
+    color: var(--cv-rule);
+  }
+
+  .cv-section {
+    margin-top: 0.95rem;
+    break-inside: avoid;
+  }
+
+  .cv-h2 {
+    font-size: 11.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--cv-accent);
+    border-bottom: 1px solid var(--cv-rule);
+    padding-bottom: 0.2rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .cv-summary {
+    text-align: justify;
+  }
+
+  .cv-competencies {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: 0.25rem;
+  }
+
+  .cv-competencies strong,
+  .cv-role-stack strong,
+  .cv-certs strong {
+    color: var(--cv-ink);
+  }
+
+  .cv-role {
+    margin-bottom: 0.7rem;
+    break-inside: avoid;
+  }
+
+  .cv-role-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+  }
+
+  .cv-role-title {
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--cv-ink);
+  }
+
+  .cv-role-dates {
+    font-size: 9.5px;
+    font-weight: 500;
+    color: var(--cv-muted);
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .cv-role-meta {
+    font-size: 10px;
+    font-style: italic;
+    color: var(--cv-muted);
+    margin-bottom: 0.25rem;
+  }
+
+  .cv-bullets {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: 0.18rem;
+  }
+
+  .cv-bullets li {
+    position: relative;
+    padding-left: 0.85rem;
+  }
+
+  .cv-bullets li::before {
+    content: '▪';
+    position: absolute;
+    left: 0;
+    color: var(--cv-accent);
+    font-size: 8px;
+    top: 1px;
+  }
+
+  .cv-role-stack {
+    font-size: 9.5px;
+    color: var(--cv-muted);
+    margin-top: 0.25rem;
+  }
+
+  .cv-certs {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.25rem 1.5rem;
+  }
+
+  .cv-languages {
+    font-size: 10.5px;
+  }
+
+  @media print {
+    .cv-page {
+      max-width: none;
+      margin: 0;
+      padding: 0;
+      box-shadow: none;
+    }
+
+    .cv-certs {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+</style>
+
+<script>
+  document.getElementById('cv-print')?.addEventListener('click', () => window.print());
+</script>

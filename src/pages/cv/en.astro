@@ -1,0 +1,11 @@
+---
+import CvLayout from '../../layouts/CvLayout.astro';
+import CvDocument from '../../components/CvDocument.astro';
+import { profile } from '../../data';
+
+const lang = 'en' as const;
+---
+
+<CvLayout lang={lang} title={`CV — ${profile.name}`}>
+  <CvDocument lang={lang} />
+</CvLayout>

@@ -1,0 +1,103 @@
+---
+import { skillCategories, spokenLanguages } from '../data';
+import type { Lang } from '../data/types';
+import { useTranslations } from '../i18n/utils';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<section id="skills" class="section">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">03</p>
+      <h2 class="section-title">{t('section.skills')}</h2>
+    </div>
+
+    <div class="skills-grid">
+      {
+        skillCategories.map((cat) => (
+          <div class="skill-card card">
+            <h3 class="skill-cat">{cat.name[lang]}</h3>
+            <ul class="skill-tags">
+              {cat.skills.map((s) => (
+                <li class="tag">{s}</li>
+              ))}
+            </ul>
+          </div>
+        ))
+      }
+    </div>
+
+    <div class="spoken">
+      <h3 class="group-title">{t('skills.languages')}</h3>
+      <ul class="spoken-list">
+        {
+          spokenLanguages.map((l) => (
+            <li class="spoken-item card">
+              <span class="spoken-name">{l.name[lang]}</span>
+              <span class="muted">{l.level[lang]}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+    gap: 1rem;
+  }
+
+  .skill-card {
+    padding: 1.25rem 1.4rem;
+  }
+
+  .skill-cat {
+    font-size: 0.95rem;
+    color: var(--accent);
+    margin-bottom: 0.9rem;
+  }
+
+  .skill-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin: 0;
+  }
+
+  .spoken {
+    margin-top: 2.5rem;
+  }
+
+  .group-title {
+    font-size: 1.15rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .spoken-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
+    gap: 1rem;
+    margin: 0;
+  }
+
+  .spoken-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    padding: 1rem 1.2rem;
+  }
+
+  .spoken-name {
+    font-weight: 600;
+    color: var(--heading);
+  }
+</style>

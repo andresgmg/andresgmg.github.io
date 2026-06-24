@@ -1,78 +1,22 @@
 ---
-import Layout from "../layouts/Layout.astro";
-import LinkCard from "../components/LinkCard.astro";
-import SocialLinks from "../components/SocialLinks.astro";
+import Layout from '../layouts/Layout.astro';
+import Hero from '../components/Hero.astro';
+import About from '../components/About.astro';
+import Experience from '../components/Experience.astro';
+import Skills from '../components/Skills.astro';
+import Projects from '../components/Projects.astro';
+import Education from '../components/Education.astro';
+import Contact from '../components/Contact.astro';
 
-const list = [
-  { href: "https://www.linkedin.com/company/facelad/", title: "LinkedIn", icon: "linkedin" },
-  { href: "https://facelad.com", title: "Our Website", icon: "language" },
-  { href: "mailto:info@facelad.com", title: "Contact Us", icon: "email" },
-];
+const lang = 'en' as const;
 ---
 
-<Layout title="Andres Marquez Dev">
-  <div class="container">
-    <div class="profile">
-      <img class="image-profile" src="profile.jpg" alt="profile" />
-      <h1>Andres Marquez</h1>
-      <p>Software Developer | Python, FastAPI, Django</p>
-    </div>
-    <ul role="list" class="link-card-grid">
-      {list.map((item) => <LinkCard href={item.href} title={item.title} icon={item.icon} />)}
-    </ul>
-    <SocialLinks />
-  </div>
+<Layout>
+  <Hero lang={lang} />
+  <About lang={lang} />
+  <Experience lang={lang} />
+  <Skills lang={lang} />
+  <Projects lang={lang} />
+  <Education lang={lang} />
+  <Contact lang={lang} />
 </Layout>
-
-<style>
-  .container {
-    margin: auto;
-    padding: 2rem 1rem;
-    width: 100%;
-    max-width: 600px;
-    font-size: 16px;
-    line-height: 1.6;
-  }
-  .profile {
-    text-align: center;
-    margin-bottom: 2rem;
-  }
-  .image-profile {
-    width: 120px;
-    height: 120px;
-    margin: 0 auto 1rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-  }
-  h1 {
-    font-size: 2rem;
-    font-weight: 700;
-    margin-bottom: 0.5em;
-    color: var(--facelad-primary);
-  }
-  p {
-    font-size: 1rem;
-    margin-bottom: 1.5rem;
-  }
-  .link-card-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 1rem;
-    padding: 0;
-    list-style: none;
-  }
-  @media (max-width: 480px) {
-    .container {
-      font-size: 14px;
-      padding: 1.5rem 1rem;
-    }
-    h1 {
-      font-size: 1.75rem;
-    }
-    p {
-      font-size: 0.9rem;
-    }
-  }
-</style>

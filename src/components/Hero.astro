@@ -1,0 +1,196 @@
+---
+import { profile } from '../data';
+import type { Lang } from '../data/types';
+import { anchor, useTranslations } from '../i18n/utils';
+import Icon from './Icon.astro';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<section class="hero">
+  <div class="container hero-grid">
+    <div class="hero-text">
+      <p class="hero-greeting">{t('hero.greeting')}</p>
+      <h1 class="hero-name">{profile.name}</h1>
+      <p class="hero-headline">{profile.headline[lang]}</p>
+      <p class="hero-tagline muted">{profile.tagline[lang]}</p>
+
+      <p class="hero-location muted">
+        <Icon name="location" size={16} />
+        <span>{t('hero.location')} {profile.location[lang]}</span>
+      </p>
+
+      <div class="hero-actions">
+        <a class="btn btn-primary" href={anchor(lang, 'contact')}>{t('hero.cta.contact')}</a>
+        <a class="btn btn-outline" href={anchor(lang, 'projects')}>{t('hero.cta.projects')}</a>
+      </div>
+
+      <div class="hero-downloads">
+        <a class="btn btn-ghost" href={profile.cv.en} download>
+          <Icon name="download" size={16} />
+          {t('hero.cta.downloadEn')}
+        </a>
+        <a class="btn btn-ghost" href={profile.cv.es} download>
+          <Icon name="download" size={16} />
+          {t('hero.cta.downloadEs')}
+        </a>
+      </div>
+
+      <ul class="hero-socials">
+        {
+          profile.socials.map((s) => (
+            <li>
+              <a
+                href={s.href}
+                class="hero-social"
+                aria-label={s.label}
+                rel="noopener noreferrer"
+                target={s.href.startsWith('http') ? '_blank' : undefined}
+              >
+                <Icon name={s.icon} size={18} />
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <div class="hero-media">
+      <img
+        class="hero-photo"
+        src="/profile.jpg"
+        width="320"
+        height="320"
+        alt={profile.name}
+        fetchpriority="high"
+      />
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    padding-block: clamp(3rem, 8vw, 5.5rem);
+  }
+
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+    align-items: center;
+  }
+
+  .hero-greeting {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--accent);
+  }
+
+  .hero-name {
+    font-size: clamp(2.1rem, 6vw, 3.25rem);
+    margin-top: 0.35rem;
+  }
+
+  .hero-headline {
+    font-size: clamp(1.1rem, 3vw, 1.4rem);
+    font-weight: 600;
+    color: var(--heading);
+    margin-top: 0.6rem;
+  }
+
+  .hero-tagline {
+    font-size: 1rem;
+    margin-top: 0.6rem;
+    max-width: 38ch;
+  }
+
+  .hero-location {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.9rem;
+    margin-top: 1rem;
+  }
+
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+  }
+
+  .hero-downloads {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 0.75rem;
+  }
+
+  .btn-ghost {
+    background: var(--surface-2);
+    color: var(--ink);
+    border-color: var(--border);
+    font-size: 0.9rem;
+  }
+
+  .btn-ghost:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .hero-socials {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 1.75rem 0 0;
+  }
+
+  .hero-social {
+    display: inline-grid;
+    place-items: center;
+    width: 2.4rem;
+    height: 2.4rem;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    transition:
+      color 0.2s ease,
+      border-color 0.2s ease,
+      transform 0.15s ease;
+  }
+
+  .hero-social:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+
+  .hero-media {
+    display: flex;
+    justify-content: center;
+  }
+
+  .hero-photo {
+    width: clamp(13rem, 40vw, 20rem);
+    height: clamp(13rem, 40vw, 20rem);
+    object-fit: cover;
+    border-radius: 50%;
+    border: 4px solid var(--surface-2);
+    box-shadow: var(--shadow-md);
+  }
+
+  @media (min-width: 48rem) {
+    .hero-grid {
+      grid-template-columns: 1.35fr 1fr;
+    }
+
+    .hero-media {
+      order: 1;
+    }
+  }
+</style>

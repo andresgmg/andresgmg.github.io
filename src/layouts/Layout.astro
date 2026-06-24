@@ -1,78 +1,136 @@
 ---
-import Header from "../components/Header.astro";
-import Footer from "../components/Footer.astro";
+import '../styles/global.css';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import { profile } from '../data';
+import type { Lang } from '../data/types';
+import { basePath, getLangFromUrl, useTranslations } from '../i18n/utils';
 
 interface Props {
-  title: string;
+  title?: string;
+  description?: string;
 }
 
-const { title } = Astro.props;
+const lang: Lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const defaultTitle = `${profile.name} — ${profile.headline[lang]}`;
+const { title = defaultTitle, description = t('meta.description') } = Astro.props;
+
+const site = Astro.site ?? new URL('https://andresgmg.github.io');
+const canonical = new URL(Astro.url.pathname, site);
+const ogImage = new URL('/og-image.png', site);
+const profileImage = new URL('/profile.jpg', site);
+
+const enUrl = new URL(basePath('en'), site).href;
+const esUrl = new URL(basePath('es'), site).href;
+const ogLocale = lang === 'es' ? 'es_ES' : 'en_US';
+const ogLocaleAlt = lang === 'es' ? 'en_US' : 'es_ES';
+
+const personSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: profile.name,
+  jobTitle: profile.headline[lang],
+  description: profile.summary[lang],
+  email: `mailto:${profile.email}`,
+  telephone: profile.phone,
+  url: site.href,
+  image: profileImage.href,
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'Santiago',
+    addressCountry: 'CL',
+  },
+  sameAs: profile.socials
+    .filter((s) => ['github', 'linkedin', 'instagram'].includes(s.icon))
+    .map((s) => s.href),
+  alumniOf: {
+    '@type': 'CollegeOrUniversity',
+    name: 'Universidad Simón Bolívar',
+  },
+  knowsLanguage: ['Spanish', 'English', 'Portuguese'],
+  knowsAbout: [
+    'Python',
+    'TypeScript',
+    'FastAPI',
+    'Django',
+    'Generative AI',
+    'LangChain',
+    'AWS',
+    'Docker',
+  ],
+};
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={lang}>
   <head>
     <meta charset="UTF-8" />
-    <meta name="description" content="Facelad Links" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" href="favicon.ico" />
-    <meta name="generator" content={Astro.generator} />
+
     <title>{title}</title>
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
+    <meta name="description" content={description} />
+    <meta name="author" content={profile.name} />
+    <link rel="canonical" href={canonical.href} />
+
+    <link rel="alternate" hreflang="en" href={enUrl} />
+    <link rel="alternate" hreflang="es" href={esUrl} />
+    <link rel="alternate" hreflang="x-default" href={enUrl} />
+
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0b0f1a" media="(prefers-color-scheme: dark)" />
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <meta name="generator" content={Astro.generator} />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={profile.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical.href} />
+    <meta property="og:image" content={ogImage.href} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content={ogLocale} />
+    <meta property="og:locale:alternate" content={ogLocaleAlt} />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage.href} />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <script is:inline>
+      (function () {
+        try {
+          const stored = localStorage.getItem('theme');
+          const theme =
+            stored ||
+            (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+          document.documentElement.dataset.theme = theme;
+        } catch (e) {}
+      })();
+    </script>
+
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(personSchema)} />
   </head>
   <body>
-    <Header />
-    <main>
+    <a class="skip-link" href="#main">{t('skip.toContent')}</a>
+    <Nav lang={lang} />
+    <main id="main">
       <slot />
     </main>
-    <Footer />
+    <Footer lang={lang} />
   </body>
 </html>
-<style is:global>
-  :root {
-    --facelad-primary: #13153f;
-    --facelad-secondary: #6dee9e;
-    --text-color: #333;
-    --bg-color: #fff;
-    --header-bg: #fff;
-  }
-  .dark-mode {
-    --facelad-primary: #6dee9e;
-    --facelad-secondary: #fff;
-    --text-color: #13153f;
-    --bg-color: #13153f;
-    --header-bg: #13153f;
-  }
-  html {
-    font-family: "Roboto", sans-serif;
-    background: var(--bg-color);
-    color: var(--text-color);
-  }
-  body {
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    transition:
-      background-color 0.3s ease,
-      color 0.3s ease;
-  }
-  main {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    padding-top: 60px; /* Match the header height */
-    box-sizing: border-box;
-  }
-  @media (max-width: 480px) {
-    body {
-      font-size: 14px;
-    }
-    main {
-      padding-top: 50px; /* Match the mobile header height */
-    }
-  }
-</style>

@@ -407,3 +407,7 @@ dist
 
 # SvelteKit build / generate output
 .svelte-kit
+
+# Astro generated files
+.astro/
+dist/
