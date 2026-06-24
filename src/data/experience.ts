@@ -4,10 +4,6 @@ import type { Experience } from './types';
  * Professional experience, rewritten for ATS readability (strong action verbs +
  * quantified impact). Facts (companies, dates, metrics, stacks) come straight from
  * the source CVs and must not be altered.
- *
- * NOTE FOR ANDRÉS — possible inconsistency to confirm: the Next4 "IT Support &
- * Systems Coordinator" role (Jan 2024 – Oct 2025) overlaps with the Zenta Group
- * role (Mar 2025 – Present). Left as-is; update the dates if that is not intended.
  */
 export const experience: Experience[] = [
   {
@@ -38,8 +34,8 @@ export const experience: Experience[] = [
   {
     company: 'Sendos.ai',
     location: { en: 'Mexico · Remote', es: 'México · Remoto' },
-    start: '2024-07',
-    end: '2025-02',
+    start: '2024-10',
+    end: '2025-03',
     kind: 'work',
     title: {
       en: 'Senior Software Engineer',
@@ -63,7 +59,7 @@ export const experience: Experience[] = [
     company: 'Next4',
     location: { en: 'Santiago, Chile', es: 'Santiago, Chile' },
     start: '2024-01',
-    end: '2025-10',
+    end: '2024-10',
     kind: 'work',
     title: {
       en: 'IT Support & Systems Coordinator',
