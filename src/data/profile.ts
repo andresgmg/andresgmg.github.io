@@ -1,7 +1,7 @@
 import type { Profile } from './types';
 
 export const profile: Profile = {
-  name: 'Andrés Márquez González',
+  name: 'Andrés Gerardo Márquez González',
   initials: 'AM',
   email: 'andres.gmg1997@gmail.com',
   phone: '+56 9 9127 9911',

@@ -1,6 +1,6 @@
 # andresgmg.github.io — Personal Portfolio
 
-Professional, minimalist and ATS-friendly portfolio for **Andrés Márquez González** —
+Professional, minimalist and ATS-friendly portfolio for **Andrés Gerardo Márquez González** —
 Senior Full-Stack Developer & Electronics Engineer. Built with [Astro](https://astro.build),
 bilingual (English / Spanish), and continuously deployed to **GitHub Pages** via GitHub Actions.
 
