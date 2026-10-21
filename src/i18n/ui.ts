@@ -70,7 +70,7 @@ const en = {
   'footer.rights': 'All rights reserved.',
 
   'meta.description':
-    'Andrés Márquez — Senior Full-Stack Developer & Electronics Engineer specialized in Python, TypeScript and Generative AI. Building scalable, high-availability software.',
+    'Andrés Márquez — Senior Software Developer & Electronics Engineer specialized in Python, TypeScript and Generative AI. Building scalable, high-availability software.',
 
   'cv.summary': 'Professional Summary',
   'cv.competencies': 'Core Competencies',
@@ -146,7 +146,7 @@ const es: Record<UiKey, string> = {
   'footer.rights': 'Todos los derechos reservados.',
 
   'meta.description':
-    'Andrés Márquez — Senior Full-Stack Developer e Ingeniero en Electrónica, especializado en Python, TypeScript e IA Generativa. Software escalable y de alta disponibilidad.',
+    'Andrés Márquez — Senior Software Developer e Ingeniero en Electrónica, especializado en Python, TypeScript e IA Generativa. Software escalable y de alta disponibilidad.',
 
   'cv.summary': 'Resumen Profesional',
   'cv.competencies': 'Competencias Clave',

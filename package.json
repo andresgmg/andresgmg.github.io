@@ -2,7 +2,7 @@
   "name": "andresgmg-portfolio",
   "type": "module",
   "version": "1.0.0",
-  "description": "Personal portfolio of Andres Marquez - Senior Full-Stack Developer (Astro, bilingual EN/ES, deployed to GitHub Pages).",
+  "description": "Personal portfolio of Andres Marquez - Senior Software Developer (Astro, bilingual EN/ES, deployed to GitHub Pages).",
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
