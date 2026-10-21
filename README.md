@@ -14,23 +14,23 @@ bilingual (English / Spanish), and continuously deployed to **GitHub Pages** via
 - **SEO & ATS optimized** — semantic HTML, Open Graph/Twitter cards, canonical + `hreflang`,
   `sitemap`, `robots.txt`, and JSON-LD `Person` structured data.
 - **Light / dark theme** with system preference detection and no flash on load.
-- **Downloadable CVs** (EN + ES) as selectable, ATS-readable PDFs generated from the same
-  content source as the website.
+- **Downloadable CVs** (EN + ES) as selectable, tagged, ATS-readable 2-page PDFs generated in CI
+  from the same content source as the website — they can never drift from the site.
 - **Single content source** — everything renders from typed data in `src/data/`.
 - Zero UI frameworks: Astro + plain CSS for maximum performance.
 
 ## 🧱 Tech stack
 
-Astro · TypeScript · CSS · `@astrojs/sitemap` · Playwright (CV PDF generation) ·
-Prettier · GitHub Actions · GitHub Pages.
+Astro · TypeScript · CSS · `@astrojs/sitemap` · `@fontsource-variable/inter` (self-hosted font) ·
+Playwright + `pdf-lib` (CV PDF generation) · Prettier · GitHub Actions · GitHub Pages.
 
 ## 📁 Project structure
 
 ```text
 /
-├── public/                 # Static assets (CV PDFs, og-image, favicon, photo, robots.txt)
+├── public/                 # Static assets (og-image, favicon, photo, robots.txt, certificates/)
 ├── scripts/
-│   └── generate-cv-pdf.mjs # Renders /cv/* routes to PDFs + builds og-image (Playwright)
+│   └── generate-cv-pdf.mjs # Renders /cv/* routes to dist/*.pdf (CI) + builds og-image (Playwright)
 ├── src/
 │   ├── components/         # UI sections (Hero, Experience, Skills, …) + Icon
 │   ├── data/               # Single source of truth (profile, experience, skills, …)
@@ -44,18 +44,17 @@ Prettier · GitHub Actions · GitHub Pages.
 
 ## 🧞 Commands
 
-| Command                | Action                                                |
-| :--------------------- | :---------------------------------------------------- |
-| `npm install`          | Install dependencies                                  |
-| `npm run dev`          | Start the dev server at `localhost:4321`              |
-| `npm run build`        | Build the production site to `./dist/`                |
-| `npm run preview`      | Preview the production build locally                  |
-| `npm run check`        | Type-check with `astro check`                         |
-| `npm run format`       | Format the codebase with Prettier                     |
-| `npm run format:check` | Verify formatting (used by CI)                        |
-| `npm run cv:all`       | Regenerate CV PDFs + `og-image.png`                   |
-| `npm run cv:pdf`       | Regenerate the CV PDFs and `og-image.png` (see below) |
-| `npm run cv:og`        | Regenerate only `og-image.png`                        |
+| Command                | Action                                      |
+| :--------------------- | :------------------------------------------ |
+| `npm install`          | Install dependencies                        |
+| `npm run dev`          | Start the dev server at `localhost:4321`    |
+| `npm run build`        | Build the production site to `./dist/`      |
+| `npm run preview`      | Preview the production build locally        |
+| `npm run check`        | Type-check with `astro check`               |
+| `npm run format`       | Format the codebase with Prettier           |
+| `npm run format:check` | Verify formatting (used by CI)              |
+| `npm run cv:pdf`       | Render the CV PDFs into `dist/` (see below) |
+| `npm run cv:og`        | Regenerate `public/og-image.png`            |
 
 ## ✏️ Editing content
 
@@ -64,26 +63,32 @@ CV update from the same source:
 
 - `profile.ts` — name, contact, headline, summary, socials, CV file paths.
 - `experience.ts` — work & freelance roles (EN/ES highlights + stack).
-- `skills.ts` — skill categories + spoken languages.
-- `education.ts` — degrees + certifications.
+- `skills.ts` — skill categories + spoken languages (`cvSkills` = shorter list used only in the PDF).
+- `education.ts` — degrees + certifications (optional `year`, `url`, `file` under `public/certificates/`).
 - `projects.ts` — featured projects (add your own here).
 
 UI labels (buttons, section titles) live in `src/i18n/ui.ts`.
 
-## 📄 Regenerating the CVs
+## 📄 CV PDFs
 
-The downloadable CVs (`public/CV_2026_AGMG_EN.pdf` / `_ES.pdf`) and the social share image are
-generated from the print routes `/cv/en` and `/cv/es` using headless Chromium.
+The downloadable CVs (`/Andres_Marquez_CV_EN.pdf`, `/Andres_Marquez_CV_ES.pdf`) are **not committed**.
+On every deploy, CI renders the print routes `/cv/en` and `/cv/es` with headless Chromium into
+`dist/`, stamps PDF metadata (title, author, subject, keywords, language) and **fails the build if a
+CV exceeds 2 pages**, so content changes in `src/data/` can never silently overflow.
+
+To preview them locally:
 
 ```sh
-npm run build                  # build the site first
-npx playwright install chromium # one-time: install the browser
-npm run cv:all                 # writes the PDFs + og-image.png into public/
-npm run cv:pdf                 # writes the PDFs + og-image.png into public/
-npm run cv:og                  # writes only og-image.png into public/
+npm run build                    # build the site first
+npx playwright install chromium  # one-time: install the browser
+npm run cv:pdf                   # writes dist/*.pdf and prints the page count of each
 ```
 
-Commit the regenerated files so download links stay stable and the deploy stays lightweight.
+Use `CHROMIUM_PATH=/path/to/chrome npm run cv:pdf` to reuse a locally installed Chromium instead.
+The share image is separate: `npm run cv:og` writes `public/og-image.png`, which is committed.
+
+The PDFs are excluded from search engines via `robots.txt` (they contain contact details) but stay
+downloadable from the site.
 
 ## 🚀 Deployment (CI/CD)
 

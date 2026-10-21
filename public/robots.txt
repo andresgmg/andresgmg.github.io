@@ -1,4 +1,6 @@
 User-agent: *
 Allow: /
+# The downloadable CVs contain personal contact details: keep them out of search results.
+Disallow: /*.pdf$
 
 Sitemap: https://andresgmg.github.io/sitemap-index.xml

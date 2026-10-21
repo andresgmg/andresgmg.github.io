@@ -1,21 +1,22 @@
 /**
- * Generate the downloadable CV PDFs (EN + ES) and the social share image.
+ * Generate the downloadable CV PDFs (EN + ES) and, on demand, the social share image.
  *
- * Renders the print-optimized /cv/en and /cv/es routes from the built `dist/`
- * folder with headless Chromium (Playwright) and writes:
- *   - public/CV_2026_AGMG_EN.pdf
- *   - public/CV_2026_AGMG_ES.pdf
- *   - public/og-image.png
+ * Renders the print-optimized /cv/en and /cv/es routes from the built `dist/` folder with
+ * headless Chromium (Playwright) and writes the PDFs **into `dist/`** so they are published
+ * together with the site. They are generated on every deploy by CI and are never committed.
  *
- * Run `npm run build` first, then `npm run cv:pdf`. The PDFs are committed so
- * downloads stay stable and the deploy build stays lightweight.
+ *   npm run build && npm run cv:pdf   → dist/Andres_Marquez_CV_EN.pdf, dist/Andres_Marquez_CV_ES.pdf
+ *   npm run cv:og                     → public/og-image.png (committed; regenerate when the hero changes)
+ *
+ * The script fails (exit 1) when a CV exceeds MAX_PAGES so CI blocks content that overflows.
  */
 import { createServer } from 'node:http';
-import { readFile } from 'node:fs/promises';
+import { readFile, writeFile } from 'node:fs/promises';
 import { existsSync, statSync } from 'node:fs';
 import { extname, join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright';
+import { PDFDocument } from 'pdf-lib';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = join(__dirname, '..');
@@ -23,6 +24,44 @@ const distDir = join(root, 'dist');
 const publicDir = join(root, 'public');
 const args = new Set(process.argv.slice(2));
 const onlyOg = args.has('--only-og');
+
+/** Hard limit for the CV length. Keep in sync with the "2 pages" goal in README. */
+const MAX_PAGES = 2;
+
+/**
+ * Output file names. Must match `profile.cv` in src/data/profile.ts (the site links to them).
+ */
+const CV_TARGETS = [
+  {
+    lang: 'en',
+    path: '/cv/en/',
+    out: 'Andres_Marquez_CV_EN.pdf',
+    title: 'Andrés Márquez — CV (English)',
+    subject: 'Senior Full-Stack Developer & Electronics Engineer — Curriculum Vitae',
+  },
+  {
+    lang: 'es',
+    path: '/cv/es/',
+    out: 'Andres_Marquez_CV_ES.pdf',
+    title: 'Andrés Márquez — CV (Español)',
+    subject: 'Senior Full-Stack Developer e Ingeniero en Electrónica — Currículum Vitae',
+  },
+];
+const AUTHOR = 'Andrés Gerardo Márquez González';
+const KEYWORDS = [
+  'Andrés Márquez',
+  'Senior Full-Stack Developer',
+  'Electronics Engineer',
+  'Python',
+  'TypeScript',
+  'FastAPI',
+  'Django',
+  'Generative AI',
+  'LangChain',
+  'AWS',
+  'Docker',
+  'Santiago, Chile',
+];
 
 if (!onlyOg && !existsSync(distDir)) {
   console.error('✗ dist/ not found. Run `npm run build` first.');
@@ -95,46 +134,82 @@ await new Promise((resolve) => server.listen(0, resolve));
 const { port } = server.address();
 const base = `http://localhost:${port}`;
 
-const browser = await chromium.launch();
+// CHROMIUM_PATH lets you point at a locally installed Chromium instead of the Playwright-managed one.
+const browser = await chromium.launch({ executablePath: process.env.CHROMIUM_PATH || undefined });
+let failed = false;
 try {
-  if (!onlyOg) {
-    const cvTargets = [
-      { path: '/cv/en/', out: 'CV_2026_AGMG_EN.pdf' },
-      { path: '/cv/es/', out: 'CV_2026_AGMG_ES.pdf' },
-    ];
-
-    for (const target of cvTargets) {
+  if (onlyOg) {
+    await generateOgImage(browser);
+    console.log('✓ public/og-image.png');
+  } else {
+    for (const target of CV_TARGETS) {
       const page = await browser.newPage();
       await page.goto(`${base}${target.path}`, { waitUntil: 'networkidle' });
+      await page.evaluate(() => document.fonts.ready);
       await page.emulateMedia({ media: 'print' });
-      await page.pdf({
-        path: join(publicDir, target.out),
+      const bytes = await page.pdf({
         format: 'A4',
         printBackground: true,
         preferCSSPageSize: true,
+        tagged: true,
       });
       await page.close();
-      console.log(`✓ ${target.out}`);
+
+      const { pages, output } = await finalizePdf(bytes, target);
+      const outPath = join(distDir, target.out);
+      await writeFile(outPath, output);
+
+      const status = pages <= MAX_PAGES ? '✓' : '✗';
+      console.log(`${status} dist/${target.out} — ${pages} page${pages === 1 ? '' : 's'}`);
+      if (pages > MAX_PAGES) {
+        failed = true;
+        console.error(
+          `  CV (${target.lang.toUpperCase()}) exceeds ${MAX_PAGES} pages. Trim content in src/data/ or tighten src/components/CvDocument.astro.`,
+        );
+      }
     }
   }
-
-  await generateOgImage(browser);
-  console.log('✓ og-image.png');
 } finally {
   await browser.close();
   server.close();
 }
 
+if (failed) process.exit(1);
+
+/** Count pages and stamp document metadata (title, author, subject, keywords, language). */
+async function finalizePdf(bytes, target) {
+  const doc = await PDFDocument.load(bytes, { updateMetadata: false });
+  const pages = doc.getPageCount();
+  doc.setTitle(target.title);
+  doc.setAuthor(AUTHOR);
+  doc.setSubject(target.subject);
+  doc.setKeywords(KEYWORDS);
+  doc.setLanguage(target.lang);
+  doc.setCreator('andresgmg.github.io — Astro + Playwright');
+  const output = await doc.save();
+  return { pages, output };
+}
+
 async function generateOgImage(browserInstance) {
+  // Same self-hosted font as the site, inlined so no network access is needed.
+  const fontPath = join(
+    root,
+    'node_modules/@fontsource-variable/inter/files/inter-latin-wght-normal.woff2',
+  );
+  const fontData = (await readFile(fontPath)).toString('base64');
+
   const html = `<!doctype html><html><head><meta charset="utf-8" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
     <style>
+      @font-face {
+        font-family: 'Inter Variable';
+        font-style: normal;
+        font-weight: 100 900;
+        src: url(data:font/woff2;base64,${fontData}) format('woff2');
+      }
       * { margin: 0; box-sizing: border-box; }
       body {
         width: 1200px; height: 630px;
-        font-family: 'Inter', system-ui, sans-serif;
+        font-family: 'Inter Variable', system-ui, sans-serif;
         background: radial-gradient(120% 120% at 0% 0%, #1e1b4b 0%, #0b0f1a 55%, #020617 100%);
         color: #f4f6fb; display: flex; flex-direction: column;
         justify-content: center; padding: 88px 96px; position: relative;
@@ -176,6 +251,7 @@ async function generateOgImage(browserInstance) {
 
   const page = await browserInstance.newPage({ viewport: { width: 1200, height: 630 } });
   await page.setContent(html, { waitUntil: 'networkidle' });
+  await page.evaluate(() => document.fonts.ready);
   await page.screenshot({
     path: join(publicDir, 'og-image.png'),
     clip: { x: 0, y: 0, width: 1200, height: 630 },

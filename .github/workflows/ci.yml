@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   build:
-    name: Lint, type-check & build
+    name: Lint, type-check, build & CV check
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -34,3 +34,17 @@ jobs:
 
       - name: Build
         run: npm run build
+
+      - name: Install Chromium for Playwright
+        run: npx playwright install --with-deps chromium
+
+      # Fails the job when a CV exceeds the page limit (see scripts/generate-cv-pdf.mjs)
+      - name: Generate CV PDFs
+        run: npm run cv:pdf
+
+      - name: Upload CV PDFs for review
+        uses: actions/upload-artifact@v4
+        with:
+          name: cv-pdfs
+          path: dist/*.pdf
+          if-no-files-found: error

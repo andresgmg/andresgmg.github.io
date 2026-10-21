@@ -12,16 +12,17 @@
     "check": "astro check",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "cv:all": "node scripts/generate-cv-pdf.mjs",
     "cv:pdf": "node scripts/generate-cv-pdf.mjs",
     "cv:og": "node scripts/generate-cv-pdf.mjs --only-og"
   },
   "dependencies": {
     "@astrojs/sitemap": "3.2.1",
+    "@fontsource-variable/inter": "^5.3.0",
     "astro": "^4.15.3"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.4",
+    "pdf-lib": "^1.17.1",
     "playwright": "^1.48.2",
     "prettier": "^3.3.3",
     "prettier-plugin-astro": "^0.14.1",

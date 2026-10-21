@@ -4,6 +4,7 @@ export const skillCategories: SkillCategory[] = [
   {
     name: { en: 'Languages', es: 'Lenguajes' },
     skills: ['Python', 'JavaScript', 'TypeScript', 'C', 'C++', 'Rust', 'Java', 'PHP', 'C#', 'Ruby'],
+    cvSkills: ['Python', 'TypeScript', 'JavaScript', 'C/C++', 'SQL'],
   },
   {
     name: { en: 'Frameworks & Libraries', es: 'Frameworks y librerías' },
@@ -46,6 +47,7 @@ export const skillCategories: SkillCategory[] = [
       'DNS',
       'SSL',
     ],
+    cvSkills: ['AWS', 'Docker', 'CI/CD (GitHub Actions)', 'Git', 'Vercel', 'Render', 'Railway'],
   },
   {
     name: { en: 'Methodologies & Tools', es: 'Metodologías y herramientas' },
@@ -56,6 +58,15 @@ export const skillCategories: SkillCategory[] = [
       'Trello',
       'Notion',
       'ClickUp',
+      'Confluence',
+      'Postman',
+      'Swagger',
+      'Stakeholder Management',
+    ],
+    cvSkills: [
+      'Scrum',
+      'Kanban',
+      'Jira',
       'Confluence',
       'Postman',
       'Swagger',
@@ -78,7 +89,7 @@ export const spokenLanguages: SpokenLanguage[] = [
     level: { en: 'Intermediate', es: 'Intermedio' },
   },
   {
-    name: { en: 'Chinnese', es: 'Chino Mandarín' },
-    level: { en: 'Basic', es: 'Basico' },
+    name: { en: 'Chinese (Mandarin)', es: 'Chino Mandarín' },
+    level: { en: 'Basic', es: 'Básico' },
   },
 ];

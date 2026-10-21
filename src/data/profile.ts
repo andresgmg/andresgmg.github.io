@@ -6,6 +6,7 @@ export const profile: Profile = {
   email: 'andres.gmg1997@gmail.com',
   phone: '+56 9 9127 9911',
   phoneHref: 'tel:+56991279911',
+  website: 'https://andresgmg.github.io',
   location: {
     en: 'Santiago, Chile',
     es: 'Santiago, Chile',
@@ -55,7 +56,7 @@ export const profile: Profile = {
     },
   ],
   cv: {
-    en: '/CV_2026_AGMG_EN.pdf',
-    es: '/CV_2026_AGMG_ES.pdf',
+    en: '/Andres_Marquez_CV_EN.pdf',
+    es: '/Andres_Marquez_CV_ES.pdf',
   },
 };
