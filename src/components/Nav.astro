@@ -22,11 +22,13 @@ const sections = ['about', 'experience', 'skills', 'projects', 'education', 'con
       <span class="brand-name">Andrés Márquez</span>
     </a>
 
-    <ul class="nav-links">
+    <ul id="nav-links" class="nav-links">
       {
         sections.map((id) => (
           <li>
-            <a href={anchor(lang, id)}>{t(`nav.${id}`)}</a>
+            <a href={anchor(lang, id)} data-section={id}>
+              {t(`nav.${id}`)}
+            </a>
           </li>
         ))
       }
@@ -59,6 +61,18 @@ const sections = ['about', 'experience', 'skills', 'projects', 'education', 'con
           <span class="theme-text">{t('theme.light')}</span>
         </span>
       </button>
+      <button
+        id="nav-toggle"
+        class="icon-btn nav-toggle"
+        type="button"
+        aria-controls="nav-links"
+        aria-expanded="false"
+        aria-label={t('nav.menu.open')}
+        data-label-open={t('nav.menu.open')}
+        data-label-close={t('nav.menu.close')}
+      >
+        <span class="burger" aria-hidden="true"><span></span><span></span><span></span></span>
+      </button>
     </div>
   </nav>
 </header>
@@ -79,6 +93,7 @@ const sections = ['about', 'experience', 'skills', 'projects', 'education', 'con
     justify-content: space-between;
     gap: 1rem;
     height: 4rem;
+    position: relative;
   }
 
   .brand {
@@ -97,20 +112,37 @@ const sections = ['about', 'experience', 'skills', 'projects', 'education', 'con
     flex: 0 0 auto;
   }
 
+  /* Mobile: dropdown panel under the header, toggled by the burger button */
   .nav-links {
     display: none;
-    gap: 1.4rem;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
     margin: 0;
+    padding: 0.5rem 0 0.75rem;
+    flex-direction: column;
+    gap: 0;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    box-shadow: var(--shadow-md);
+  }
+
+  .nav-links.open {
+    display: flex;
   }
 
   .nav-links a {
-    font-size: 0.92rem;
+    display: block;
+    padding: 0.7rem clamp(1.1rem, 4vw, 2rem);
+    font-size: 1rem;
     font-weight: 500;
     color: var(--muted);
     transition: color 0.2s ease;
   }
 
-  .nav-links a:hover {
+  .nav-links a:hover,
+  .nav-links a[aria-current='true'] {
     color: var(--accent);
   }
 
@@ -213,22 +245,95 @@ const sections = ['about', 'experience', 'skills', 'projects', 'education', 'con
     transform: translateY(0);
   }
 
+  .nav-toggle {
+    padding-inline: 0.5rem;
+  }
+
+  .burger {
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;
+    width: 1.1rem;
+  }
+
+  .burger span {
+    display: block;
+    height: 2px;
+    border-radius: 2px;
+    background: currentColor;
+    transition:
+      transform 0.2s ease,
+      opacity 0.2s ease;
+  }
+
+  .nav-toggle[aria-expanded='true'] .burger span:nth-child(1) {
+    transform: translateY(6px) rotate(45deg);
+  }
+
+  .nav-toggle[aria-expanded='true'] .burger span:nth-child(2) {
+    opacity: 0;
+  }
+
+  .nav-toggle[aria-expanded='true'] .burger span:nth-child(3) {
+    transform: translateY(-6px) rotate(-45deg);
+  }
+
   @media (prefers-reduced-motion: reduce) {
-    .theme-option {
+    .theme-option,
+    .burger span {
       transition: none;
     }
   }
 
   @media (min-width: 48rem) {
-    .nav-links {
+    .nav-links,
+    .nav-links.open {
       display: inline-flex;
+      position: static;
+      flex-direction: row;
+      gap: 1.4rem;
+      padding: 0;
+      background: transparent;
+      border: 0;
+      box-shadow: none;
+    }
+
+    .nav-links a {
+      padding: 0.25rem 0;
+      font-size: 0.92rem;
+      position: relative;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -2px;
+      height: 2px;
+      border-radius: 2px;
+      background: var(--accent);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.2s ease;
+    }
+
+    .nav-links a[aria-current='true']::after {
+      transform: scaleX(1);
+    }
+
+    .nav-toggle {
+      display: none;
     }
   }
 </style>
 
 <script>
-  const toggle = document.getElementById('theme-toggle');
   const root = document.documentElement;
+
+  /* ---------- Theme toggle ---------- */
+  const toggle = document.getElementById('theme-toggle');
 
   const updateThemeToggleLabel = () => {
     if (!toggle) return;
@@ -251,4 +356,76 @@ const sections = ['about', 'experience', 'skills', 'projects', 'education', 'con
       /* ignore */
     }
   });
+
+  /* ---------- Mobile menu ---------- */
+  const navToggle = document.getElementById('nav-toggle');
+  const navLinks = document.getElementById('nav-links');
+
+  const setMenu = (open: boolean) => {
+    if (!navToggle || !navLinks) return;
+    navLinks.classList.toggle('open', open);
+    navToggle.setAttribute('aria-expanded', String(open));
+    const label = open ? navToggle.dataset.labelClose : navToggle.dataset.labelOpen;
+    if (label) navToggle.setAttribute('aria-label', label);
+  };
+
+  navToggle?.addEventListener('click', () => {
+    setMenu(navToggle.getAttribute('aria-expanded') !== 'true');
+  });
+
+  navLinks?.addEventListener('click', (event) => {
+    if ((event.target as HTMLElement).closest('a')) setMenu(false);
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') setMenu(false);
+  });
+
+  document.addEventListener('click', (event) => {
+    const target = event.target as Node;
+    if (
+      navLinks?.classList.contains('open') &&
+      !navLinks.contains(target) &&
+      !navToggle?.contains(target)
+    ) {
+      setMenu(false);
+    }
+  });
+
+  /* ---------- Active section highlight ---------- */
+  const links = Array.from(
+    document.querySelectorAll<HTMLAnchorElement>('#nav-links a[data-section]'),
+  );
+  const sections = links
+    .map((link) => document.getElementById(link.dataset.section ?? ''))
+    .filter((el): el is HTMLElement => el !== null);
+
+  if ('IntersectionObserver' in window && sections.length) {
+    const setActive = (id: string | null) => {
+      for (const link of links) {
+        if (link.dataset.section === id) link.setAttribute('aria-current', 'true');
+        else link.removeAttribute('aria-current');
+      }
+    };
+
+    const visible = new Map<string, number>();
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          visible.set(entry.target.id, entry.isIntersecting ? entry.intersectionRatio : 0);
+        }
+        let best: string | null = null;
+        let bestRatio = 0;
+        for (const [id, ratio] of visible) {
+          if (ratio > bestRatio) {
+            best = id;
+            bestRatio = ratio;
+          }
+        }
+        setActive(best);
+      },
+      { rootMargin: '-35% 0px -55% 0px', threshold: [0, 0.1, 0.25, 0.5, 0.75, 1] },
+    );
+    sections.forEach((section) => observer.observe(section));
+  }
 </script>

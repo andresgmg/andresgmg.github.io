@@ -411,3 +411,7 @@ dist
 # Astro generated files
 .astro/
 dist/
+# Generated CVs live in dist/ (built by CI); never commit PDFs
+public/*.pdf
+# The Python template above ignores lib/; keep the Astro source folder tracked
+!src/lib/

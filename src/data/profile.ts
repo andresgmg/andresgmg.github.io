@@ -6,6 +6,7 @@ export const profile: Profile = {
   email: 'andres.gmg1997@gmail.com',
   phone: '+56 9 9127 9911',
   phoneHref: 'tel:+56991279911',
+  website: 'https://andresgmg.github.io',
   location: {
     en: 'Santiago, Chile',
     es: 'Santiago, Chile',
@@ -22,6 +23,11 @@ export const profile: Profile = {
     en: 'Electronics Engineer and Senior Full-Stack Developer with 5+ years of experience designing and leading scalable, high-availability architectures. Specialized in the Python and TypeScript ecosystems with a strong focus on Generative AI solutions (Gemini, LangChain). Proven track record managing international clients and communicating technically in English, with a solid background in embedded systems bridging software and robotics.',
     es: 'Ingeniero en Electrónica y Senior Full-Stack Developer con más de 5 años de experiencia diseñando y liderando arquitecturas escalables y de alta disponibilidad. Especializado en los ecosistemas de Python y TypeScript, con un fuerte enfoque en soluciones de IA Generativa (Gemini, LangChain). Trayectoria comprobada gestionando clientes internacionales y comunicando técnicamente en inglés, con una sólida base en sistemas embebidos que conecta software y robótica.',
   },
+  // Figures must match the highlights in experience.ts (Facelad SPA).
+  stats: [
+    { value: '20+', label: { en: 'Business owners advised', es: 'Empresarios asesorados' } },
+    { value: '7', label: { en: 'Specialists led', es: 'Especialistas liderados' } },
+  ],
   socials: [
     {
       icon: 'github',
@@ -55,7 +61,7 @@ export const profile: Profile = {
     },
   ],
   cv: {
-    en: '/CV_2026_AGMG_EN.pdf',
-    es: '/CV_2026_AGMG_ES.pdf',
+    en: '/Andres_Marquez_CV_EN.pdf',
+    es: '/Andres_Marquez_CV_ES.pdf',
   },
 };

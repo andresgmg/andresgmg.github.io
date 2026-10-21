@@ -1,4 +1,6 @@
 ---
+import '@fontsource-variable/inter';
+import { profile } from '../data';
 import type { Lang } from '../data/types';
 
 interface Props {
@@ -15,14 +17,9 @@ const { lang, title } = Astro.props;
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="robots" content="noindex" />
+    <meta name="author" content={profile.name} />
     <title>{title}</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
   </head>
   <body>
     <slot />
@@ -49,6 +46,7 @@ const { lang, title } = Astro.props;
 
   body {
     font-family:
+      'Inter Variable',
       'Inter',
       system-ui,
       -apple-system,
@@ -58,13 +56,20 @@ const { lang, title } = Astro.props;
       sans-serif;
     color: var(--cv-ink);
     background: var(--cv-bg);
-    line-height: 1.5;
-    font-size: 11px;
+    line-height: 1.42;
+    font-size: 10.5px;
+    orphans: 2;
+    widows: 2;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
   }
 
   @page {
     size: A4;
-    margin: 14mm 15mm;
+    margin: 12mm 14mm;
   }
 
   @media print {

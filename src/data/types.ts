@@ -16,13 +16,20 @@ export interface Profile {
   email: string;
   phone: string;
   phoneHref: string;
+  /** Canonical public URL of the portfolio (used in the CV header, JSON-LD and llms.txt). */
+  website: string;
   location: Localized<string>;
   headline: Localized<string>;
   /** Short tagline shown under the name in the hero. */
   tagline: Localized<string>;
   summary: Localized<string>;
+  /** Headline figures shown in the hero (years of experience is computed from `experience`). */
+  stats: { value: string; label: Localized<string> }[];
   socials: SocialLink[];
-  /** Downloadable CV files per language, served from /public. */
+  /**
+   * Downloadable CV files per language. Served from the site root; generated into `dist/`
+   * by `scripts/generate-cv-pdf.mjs` (never committed).
+   */
   cv: Record<Lang, string>;
 }
 
@@ -44,7 +51,10 @@ export interface Experience {
 
 export interface SkillCategory {
   name: Localized<string>;
+  /** Full list, shown on the website. */
   skills: string[];
+  /** Optional shorter list used only in the PDF CV. Falls back to `skills`. */
+  cvSkills?: string[];
 }
 
 export interface SpokenLanguage {
@@ -65,6 +75,12 @@ export interface Education {
 export interface Certification {
   name: Localized<string>;
   issuer: string;
+  /** Format: 'YYYY'. Optional until known. */
+  year?: string;
+  /** External verification URL (Coursera, Google Activate, etc.). */
+  url?: string;
+  /** Path of the certificate file under `public/certificates/`, e.g. '/certificates/2020-umich-python.pdf'. */
+  file?: string;
 }
 
 export interface Project {

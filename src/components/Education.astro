@@ -2,6 +2,7 @@
 import { certifications, education } from '../data';
 import type { Lang } from '../data/types';
 import { useTranslations } from '../i18n/utils';
+import Icon from './Icon.astro';
 
 interface Props {
   lang: Lang;
@@ -40,12 +41,32 @@ const t = useTranslations(lang);
         <h3 class="group-title">{t('education.certifications')}</h3>
         <ul class="cert-list">
           {
-            certifications.map((c) => (
-              <li class="cert card">
-                <span class="cert-name">{c.name[lang]}</span>
-                <span class="muted">{c.issuer}</span>
-              </li>
-            ))
+            certifications.map((c) => {
+              const href = c.url ?? c.file;
+              return (
+                <li class="cert card">
+                  <div class="cert-text">
+                    <span class="cert-name">{c.name[lang]}</span>
+                    <span class="muted">
+                      {c.issuer}
+                      {c.year && <span class="cert-year"> · {c.year}</span>}
+                    </span>
+                  </div>
+                  {href && (
+                    <a
+                      class="cert-link"
+                      href={href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`${t('education.viewCertificate')}: ${c.name[lang]}`}
+                    >
+                      <Icon name="external" size={14} />
+                      <span>{t('education.viewCertificate')}</span>
+                    </a>
+                  )}
+                </li>
+              );
+            })
           }
         </ul>
       </div>
@@ -94,9 +115,32 @@ const t = useTranslations(lang);
 
   .cert {
     display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.9rem 1.2rem;
+  }
+
+  .cert-text {
+    display: flex;
     flex-direction: column;
     gap: 0.2rem;
-    padding: 0.9rem 1.2rem;
+    min-width: 0;
+  }
+
+  .cert-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    flex-shrink: 0;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--accent);
+    transition: color 0.2s ease;
+  }
+
+  .cert-link:hover {
+    color: var(--accent-strong);
   }
 
   .cert-name {

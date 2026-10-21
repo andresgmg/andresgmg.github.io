@@ -18,6 +18,8 @@ const en = {
   'nav.projects': 'Projects',
   'nav.education': 'Education',
   'nav.contact': 'Contact',
+  'nav.menu.open': 'Open menu',
+  'nav.menu.close': 'Close menu',
 
   'hero.greeting': 'Hi, I’m',
   'hero.cta.contact': 'Get in touch',
@@ -25,6 +27,9 @@ const en = {
   'hero.cta.downloadEn': 'Download CV (EN)',
   'hero.cta.downloadEs': 'Download CV (ES)',
   'hero.location': 'Based in',
+  'hero.available': 'Open to senior full-stack & AI roles',
+  'hero.stats.years': 'Years of experience',
+  'hero.stats.ariaLabel': 'Career highlights',
 
   'section.about': 'About',
   'section.experience': 'Experience',
@@ -39,11 +44,13 @@ const en = {
 
   'education.degrees': 'Education',
   'education.certifications': 'Certifications',
+  'education.viewCertificate': 'View certificate',
 
   'skills.languages': 'Languages',
 
   'projects.visit': 'Visit',
   'projects.code': 'Code',
+  'projects.empty': 'More projects coming soon — meanwhile, check my GitHub.',
 
   'contact.lead': 'Open to senior full-stack and AI engineering roles. Let’s talk.',
   'contact.emailMe': 'Email me',
@@ -86,6 +93,8 @@ const es: Record<UiKey, string> = {
   'nav.projects': 'Proyectos',
   'nav.education': 'Educación',
   'nav.contact': 'Contacto',
+  'nav.menu.open': 'Abrir menú',
+  'nav.menu.close': 'Cerrar menú',
 
   'hero.greeting': 'Hola, soy',
   'hero.cta.contact': 'Contáctame',
@@ -93,6 +102,9 @@ const es: Record<UiKey, string> = {
   'hero.cta.downloadEn': 'Descargar CV (EN)',
   'hero.cta.downloadEs': 'Descargar CV (ES)',
   'hero.location': 'Ubicado en',
+  'hero.available': 'Disponible para roles senior full-stack e IA',
+  'hero.stats.years': 'Años de experiencia',
+  'hero.stats.ariaLabel': 'Datos destacados de mi carrera',
 
   'section.about': 'Sobre mí',
   'section.experience': 'Experiencia',
@@ -107,11 +119,13 @@ const es: Record<UiKey, string> = {
 
   'education.degrees': 'Educación',
   'education.certifications': 'Certificaciones',
+  'education.viewCertificate': 'Ver certificado',
 
   'skills.languages': 'Idiomas',
 
   'projects.visit': 'Visitar',
   'projects.code': 'Código',
+  'projects.empty': 'Pronto más proyectos — mientras tanto, revisa mi GitHub.',
 
   'contact.lead':
     'Disponible para roles senior de desarrollo full-stack e ingeniería de IA. Conversemos.',

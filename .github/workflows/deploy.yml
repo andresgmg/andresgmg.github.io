@@ -41,6 +41,13 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Install Chromium for Playwright
+        run: npx playwright install --with-deps chromium
+
+      # Renders /cv/en and /cv/es into dist/*.pdf so the CVs always match src/data
+      - name: Generate CV PDFs
+        run: npm run cv:pdf
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
