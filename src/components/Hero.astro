@@ -3,6 +3,8 @@ import { profile } from '../data';
 import type { Lang } from '../data/types';
 import { anchor, useTranslations } from '../i18n/utils';
 import Icon from './Icon.astro';
+import { Image } from 'astro:assets';
+import profilePhoto from '../assets/profile.jpg';
 
 interface Props {
   lang: Lang;
@@ -61,12 +63,17 @@ const t = useTranslations(lang);
     </div>
 
     <div class="hero-media">
-      <img
+      <Image
         class="hero-photo"
-        src="/profile.jpg"
-        width="320"
-        height="320"
+        src={profilePhoto}
+        widths={[320, 640]}
+        sizes="(min-width: 48rem) 20rem, 60vw"
+        width={640}
+        height={640}
+        format="webp"
+        quality={82}
         alt={profile.name}
+        loading="eager"
         fetchpriority="high"
       />
     </div>

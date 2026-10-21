@@ -12,7 +12,9 @@ bilingual (English / Spanish), and continuously deployed to **GitHub Pages** via
 
 - **Bilingual (EN/ES)** with Astro i18n — English at `/`, Spanish at `/es/`.
 - **SEO & ATS optimized** — semantic HTML, Open Graph/Twitter cards, canonical + `hreflang`,
-  `sitemap`, `robots.txt`, and JSON-LD `Person` structured data.
+  `sitemap`, `robots.txt`, and JSON-LD `ProfilePage` + `Person` structured data.
+- **AI-friendly** — `/llms.txt` (index), `/llms-full.txt` (full CV in Markdown, EN + ES) and
+  `/resume.json` (JSON Resume schema), all generated at build time from the same data.
 - **Light / dark theme** with system preference detection and no flash on load.
 - **Downloadable CVs** (EN + ES) as selectable, tagged, ATS-readable 2-page PDFs generated in CI
   from the same content source as the website — they can never drift from the site.
@@ -34,9 +36,11 @@ Playwright + `pdf-lib` (CV PDF generation) · Prettier · GitHub Actions · GitH
 ├── src/
 │   ├── components/         # UI sections (Hero, Experience, Skills, …) + Icon
 │   ├── data/               # Single source of truth (profile, experience, skills, …)
+│   ├── assets/             # profile.jpg (optimized by astro:assets at build time)
 │   ├── i18n/               # UI strings dictionary + helpers
 │   ├── layouts/            # Layout.astro (site) + CvLayout.astro (print)
-│   ├── pages/              # index.astro (EN), es/index.astro (ES), cv/en, cv/es
+│   ├── lib/                # cv-text.ts: Markdown / JSON Resume renderers of the data
+│   ├── pages/              # index (EN), es/index (ES), cv/en, cv/es, llms.txt, resume.json
 │   └── styles/             # global.css design system
 ├── astro.config.mjs        # site + i18n + sitemap
 └── .github/workflows/      # ci.yml (PRs) + deploy.yml (Pages)

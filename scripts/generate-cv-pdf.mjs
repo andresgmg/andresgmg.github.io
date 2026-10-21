@@ -197,6 +197,7 @@ async function generateOgImage(browserInstance) {
     'node_modules/@fontsource-variable/inter/files/inter-latin-wght-normal.woff2',
   );
   const fontData = (await readFile(fontPath)).toString('base64');
+  const photoData = (await readFile(join(root, 'src/assets/profile.jpg'))).toString('base64');
 
   const html = `<!doctype html><html><head><meta charset="utf-8" />
     <style>
@@ -243,7 +244,7 @@ async function generateOgImage(browserInstance) {
           <p class="tag">Python · TypeScript · Generative AI · Scalable architectures</p>
         </section>
         <aside class="avatar-wrap">
-          <img class="avatar" src="${base}/profile.jpg" alt="Andrés Márquez" />
+          <img class="avatar" src="data:image/jpeg;base64,${photoData}" alt="Andrés Márquez" />
         </aside>
       </div>
       <div class="url">andresgmg.github.io</div>
