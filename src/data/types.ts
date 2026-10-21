@@ -12,7 +12,6 @@ export interface SocialLink {
 
 export interface Profile {
   name: string;
-  initials: string;
   email: string;
   phone: string;
   phoneHref: string;

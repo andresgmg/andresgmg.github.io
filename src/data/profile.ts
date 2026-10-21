@@ -1,8 +1,10 @@
 import type { Profile } from './types';
+import { yearsOfExperience } from '../lib/years';
+
+const years = yearsOfExperience();
 
 export const profile: Profile = {
   name: 'Andrés Gerardo Márquez González',
-  initials: 'AGMG',
   email: 'andres.gmg1997@gmail.com',
   phone: '+56 9 9127 9911',
   phoneHref: 'tel:+56991279911',
@@ -12,16 +14,16 @@ export const profile: Profile = {
     es: 'Santiago, Chile',
   },
   headline: {
-    en: 'Senior Full-Stack Developer & Electronics Engineer',
-    es: 'Senior Full-Stack Developer e Ingeniero en Electrónica',
+    en: 'Senior Software Developer & Electronics Engineer',
+    es: 'Senior Software Developer e Ingeniero en Electrónica',
   },
   tagline: {
     en: 'Python · TypeScript · Generative AI · Scalable architectures',
     es: 'Python · TypeScript · IA Generativa · Arquitecturas escalables',
   },
   summary: {
-    en: 'Electronics Engineer and Senior Full-Stack Developer with 5+ years of experience designing and leading scalable, high-availability architectures. Specialized in the Python and TypeScript ecosystems with a strong focus on Generative AI solutions (Gemini, LangChain). Proven track record managing international clients and communicating technically in English, with a solid background in embedded systems bridging software and robotics.',
-    es: 'Ingeniero en Electrónica y Senior Full-Stack Developer con más de 5 años de experiencia diseñando y liderando arquitecturas escalables y de alta disponibilidad. Especializado en los ecosistemas de Python y TypeScript, con un fuerte enfoque en soluciones de IA Generativa (Gemini, LangChain). Trayectoria comprobada gestionando clientes internacionales y comunicando técnicamente en inglés, con una sólida base en sistemas embebidos que conecta software y robótica.',
+    en: `Electronics Engineer and Senior Software Developer with ${years}+ years of experience designing and leading scalable, high-availability architectures. Specialized in the Python and TypeScript ecosystems with a strong focus on Generative AI solutions (Gemini, LangChain). Proven track record managing international clients and communicating technically in English, with a solid background in embedded systems bridging software and robotics.`,
+    es: `Ingeniero en Electrónica y Senior Software Developer con más de ${years} años de experiencia diseñando y liderando arquitecturas escalables y de alta disponibilidad. Especializado en los ecosistemas de Python y TypeScript, con un fuerte enfoque en soluciones de IA Generativa (Gemini, LangChain). Trayectoria comprobada gestionando clientes internacionales y comunicando técnicamente en inglés, con una sólida base en sistemas embebidos que conecta software y robótica.`,
   },
   // Figures must match the highlights in experience.ts (Facelad SPA).
   stats: [

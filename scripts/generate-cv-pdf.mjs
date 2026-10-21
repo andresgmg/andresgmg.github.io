@@ -6,7 +6,7 @@
  * together with the site. They are generated on every deploy by CI and are never committed.
  *
  *   npm run build && npm run cv:pdf   → dist/Andres_Marquez_CV_EN.pdf, dist/Andres_Marquez_CV_ES.pdf
- *   npm run cv:og                     → public/og-image.png (committed; regenerate when the hero changes)
+ *   npm run cv:og                     → public/og-image.png, favicon.ico, apple-touch-icon.png (committed)
  *
  * The script fails (exit 1) when a CV exceeds MAX_PAGES so CI blocks content that overflows.
  */
@@ -37,20 +37,20 @@ const CV_TARGETS = [
     path: '/cv/en/',
     out: 'Andres_Marquez_CV_EN.pdf',
     title: 'Andrés Márquez — CV (English)',
-    subject: 'Senior Full-Stack Developer & Electronics Engineer — Curriculum Vitae',
+    subject: 'Senior Software Developer & Electronics Engineer — Curriculum Vitae',
   },
   {
     lang: 'es',
     path: '/cv/es/',
     out: 'Andres_Marquez_CV_ES.pdf',
     title: 'Andrés Márquez — CV (Español)',
-    subject: 'Senior Full-Stack Developer e Ingeniero en Electrónica — Currículum Vitae',
+    subject: 'Senior Software Developer e Ingeniero en Electrónica — Currículum Vitae',
   },
 ];
 const AUTHOR = 'Andrés Gerardo Márquez González';
 const KEYWORDS = [
   'Andrés Márquez',
-  'Senior Full-Stack Developer',
+  'Senior Software Developer',
   'Electronics Engineer',
   'Python',
   'TypeScript',
@@ -141,6 +141,8 @@ try {
   if (onlyOg) {
     await generateOgImage(browser);
     console.log('✓ public/og-image.png');
+    await generateIcons(browser);
+    console.log('✓ public/favicon.ico, public/apple-touch-icon.png');
   } else {
     for (const target of CV_TARGETS) {
       const page = await browser.newPage();
@@ -237,10 +239,10 @@ async function generateOgImage(browserInstance) {
       <div class="grid">
         <section>
           <div class="top">
-            <img class="mark" src="${base}/favicon.svg" alt="AGMG logo" />
+            <img class="mark" src="${base}/favicon.svg" alt="Facelad isotype" />
           </div>
           <h1>Andrés Márquez González</h1>
-          <p class="role">Senior Full-Stack Developer &amp; Electronics Engineer</p>
+          <p class="role">Senior Software Developer &amp; Electronics Engineer</p>
           <p class="tag">Python · TypeScript · Generative AI · Scalable architectures</p>
         </section>
         <aside class="avatar-wrap">
@@ -258,4 +260,52 @@ async function generateOgImage(browserInstance) {
     clip: { x: 0, y: 0, width: 1200, height: 630 },
   });
   await page.close();
+}
+
+/**
+ * Raster fallbacks of public/favicon.svg: favicon.ico (32 px) for browsers/tools that ignore SVG
+ * icons and apple-touch-icon.png (180 px) for iOS/Safari. Both are committed next to og-image.png.
+ */
+async function generateIcons(browserInstance) {
+  const svg = await readFile(join(publicDir, 'favicon.svg'), 'utf8');
+  const render = async (size) => {
+    const page = await browserInstance.newPage({ viewport: { width: size, height: size } });
+    await page.setContent(
+      `<body style="margin:0;background:transparent"><img src="data:image/svg+xml;base64,${Buffer.from(svg).toString('base64')}" width="${size}" height="${size}"></body>`,
+    );
+    const png = await page.screenshot({
+      omitBackground: true,
+      clip: { x: 0, y: 0, width: size, height: size },
+    });
+    await page.close();
+    return png;
+  };
+  await writeFile(join(publicDir, 'apple-touch-icon.png'), await render(180));
+  await writeFile(join(publicDir, 'favicon.ico'), encodeIco([{ size: 32, png: await render(32) }]));
+}
+
+/** Minimal ICO encoder: an ICO may embed PNG-compressed images directly (supported everywhere since Vista). */
+function encodeIco(images) {
+  const header = Buffer.alloc(6);
+  header.writeUInt16LE(0, 0); // reserved
+  header.writeUInt16LE(1, 2); // type: icon
+  header.writeUInt16LE(images.length, 4);
+  const entries = [];
+  const blobs = [];
+  let offset = 6 + 16 * images.length;
+  for (const { size, png } of images) {
+    const entry = Buffer.alloc(16);
+    entry.writeUInt8(size >= 256 ? 0 : size, 0); // width (0 = 256)
+    entry.writeUInt8(size >= 256 ? 0 : size, 1); // height
+    entry.writeUInt8(0, 2); // palette
+    entry.writeUInt8(0, 3); // reserved
+    entry.writeUInt16LE(1, 4); // colour planes
+    entry.writeUInt16LE(32, 6); // bits per pixel
+    entry.writeUInt32LE(png.length, 8);
+    entry.writeUInt32LE(offset, 12);
+    entries.push(entry);
+    blobs.push(png);
+    offset += png.length;
+  }
+  return Buffer.concat([header, ...entries, ...blobs]);
 }

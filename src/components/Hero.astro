@@ -1,7 +1,8 @@
 ---
-import { experience, profile } from '../data';
+import { profile } from '../data';
 import type { Lang } from '../data/types';
 import { anchor, useTranslations } from '../i18n/utils';
+import { yearsOfExperience } from '../lib/years';
 import Icon from './Icon.astro';
 import { Image } from 'astro:assets';
 import profilePhoto from '../assets/profile.jpg';
@@ -13,14 +14,7 @@ interface Props {
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 
-/** Years of experience, computed from the earliest role so it never goes stale. */
-const earliest = experience.map((e) => e.start).sort()[0];
-const [startYear, startMonth] = (earliest ?? '').split('-').map(Number);
-const now = new Date();
-const months =
-  (now.getUTCFullYear() - (startYear ?? now.getUTCFullYear())) * 12 +
-  (now.getUTCMonth() + 1 - (startMonth ?? 1));
-const years = Math.max(1, Math.floor(months / 12));
+const years = yearsOfExperience();
 
 const stats = [{ value: `${years}+`, label: t('hero.stats.years') }].concat(
   profile.stats.map((s) => ({ value: s.value, label: s.label[lang] })),
