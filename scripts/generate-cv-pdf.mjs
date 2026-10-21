@@ -237,7 +237,7 @@ async function generateOgImage(browserInstance) {
       <div class="grid">
         <section>
           <div class="top">
-            <img class="mark" src="${base}/favicon.svg" alt="AGMG logo" />
+            <img class="mark" src="${base}/favicon.svg" alt="Facelad isotype" />
           </div>
           <h1>Andrés Márquez González</h1>
           <p class="role">Senior Full-Stack Developer &amp; Electronics Engineer</p>
