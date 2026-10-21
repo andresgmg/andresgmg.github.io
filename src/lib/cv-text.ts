@@ -74,7 +74,8 @@ export function cvMarkdown(lang: Lang): string {
     `## ${t('cv.education')}`,
     '',
     ...education.map(
-      (ed) => `- ${ed.degree[lang]} — ${ed.institution}, ${ed.location[lang]} (${ed.start}–${ed.end})`,
+      (ed) =>
+        `- ${ed.degree[lang]} — ${ed.institution}, ${ed.location[lang]} (${ed.start}–${ed.end})`,
     ),
     '',
     `## ${t('cv.certifications')}`,
@@ -106,7 +107,9 @@ export function llmsIndex(): string {
     '',
     '## Current roles',
     '',
-    ...current.map((e) => `- ${e.title.en} at ${e.company} (${formatDateRange(e.start, e.end, 'en')})`),
+    ...current.map(
+      (e) => `- ${e.title.en} at ${e.company} (${formatDateRange(e.start, e.end, 'en')})`,
+    ),
     '',
     '## Core skills',
     '',

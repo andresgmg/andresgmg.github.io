@@ -23,6 +23,8 @@ export interface Profile {
   /** Short tagline shown under the name in the hero. */
   tagline: Localized<string>;
   summary: Localized<string>;
+  /** Headline figures shown in the hero (years of experience is computed from `experience`). */
+  stats: { value: string; label: Localized<string> }[];
   socials: SocialLink[];
   /**
    * Downloadable CV files per language. Served from the site root; generated into `dist/`

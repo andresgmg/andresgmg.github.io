@@ -171,5 +171,30 @@ const profilePageSchema = {
       <slot />
     </main>
     <Footer lang={lang} />
+    <script>
+      // Reveal sections as they scroll into view (no-op when reduced motion is preferred)
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (!reduce && 'IntersectionObserver' in window) {
+        const targets = document.querySelectorAll<HTMLElement>(
+          '.section .section-head, .section .card, .section .about-summary, .section .contact-lead',
+        );
+        const observer = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              if (entry.isIntersecting) {
+                entry.target.classList.add('is-visible');
+                observer.unobserve(entry.target);
+              }
+            }
+          },
+          { rootMargin: '0px 0px -8% 0px', threshold: 0.05 },
+        );
+        targets.forEach((el, i) => {
+          el.classList.add('reveal');
+          el.style.transitionDelay = `${Math.min(i % 6, 5) * 40}ms`;
+          observer.observe(el);
+        });
+      }
+    </script>
   </body>
 </html>

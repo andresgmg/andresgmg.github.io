@@ -3,6 +3,7 @@ import { projects } from '../data';
 import type { Lang } from '../data/types';
 import { useTranslations } from '../i18n/utils';
 import Icon from './Icon.astro';
+import { profile } from '../data';
 
 interface Props {
   lang: Lang;
@@ -11,6 +12,7 @@ interface Props {
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 const featured = projects.filter((p) => p.featured);
+const github = profile.socials.find((s) => s.icon === 'github');
 ---
 
 <section id="projects" class="section section-alt">
@@ -19,6 +21,25 @@ const featured = projects.filter((p) => p.featured);
       <p class="eyebrow">04</p>
       <h2 class="section-title">{t('section.projects')}</h2>
     </div>
+
+    {
+      featured.length === 0 && (
+        <p class="projects-empty muted">
+          {t('projects.empty')}
+          {github && (
+            <a
+              href={github.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="projects-empty-link"
+            >
+              <Icon name="github" size={15} />
+              <span>{github.handle ?? 'GitHub'}</span>
+            </a>
+          )}
+        </p>
+      )
+    }
 
     <div class="projects-grid">
       {
@@ -66,18 +87,46 @@ const featured = projects.filter((p) => p.featured);
   }
 
   .project {
+    position: relative;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
     gap: 0.85rem;
     padding: 1.5rem 1.6rem;
     transition:
       transform 0.18s ease,
-      border-color 0.2s ease;
+      border-color 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+
+  .project::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--accent-strong), transparent);
   }
 
   .project:hover {
     transform: translateY(-3px);
     border-color: var(--accent);
+    box-shadow: var(--shadow-md);
+  }
+
+  .projects-empty {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .projects-empty-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    color: var(--accent);
+    font-weight: 500;
   }
 
   .project-head {
